@@ -3,7 +3,7 @@ let siteData = null;
 async function fetchContent(rootPath = './') {
     if (siteData) return siteData;
     try {
-        const response = await fetch(`${rootPath}js/content.json`);
+        const response = await fetch(`${rootPath}data/content.json`);
         siteData = await response.json();
         return siteData;
     } catch (error) {
@@ -33,7 +33,7 @@ class SiteNav extends HTMLElement {
         this.innerHTML = `
         <nav>
             <div class="logo">
-                <img src="${rootPath}icons/onedroid-icon.png" class="onedroid-icon" alt="OneDroid Icon">
+                <img src="${rootPath}assets/icons/onedroid-icon.png" class="onedroid-icon" alt="OneDroid Icon">
                 <a href="${rootPath}index.html">@onedroid</a>
             </div>
             <div class="nav-links">
@@ -71,10 +71,10 @@ class HeroSection extends HTMLElement {
             <div class="btn-group">
                 ${page === 'home' ? `
                     <a href="${heroData.github_url}" class="btn btn-outline">
-                        <img src="${rootPath}icons/github.svg" alt="GitHub"> GitHub
+                        <img src="${rootPath}assets/icons/github.svg" alt="GitHub"> GitHub
                     </a>
                     <a class="btn btn-outline disabled" aria-disabled="true">
-                        <img src="${rootPath}icons/smartphone.svg" alt="Playstore"> Playstore (Coming Soon)
+                        <img src="${rootPath}assets/icons/smartphone.svg" alt="Playstore"> Playstore (Coming Soon)
                     </a>
                 ` : ''}
                 ${page === 'about' ? heroData.links.map(l => `

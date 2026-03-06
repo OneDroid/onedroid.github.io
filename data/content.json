@@ -24,8 +24,8 @@
       {
         "title": "5G",
         "status": "Coming Soon...",
-        "icon": "icons/smartphone.svg",
-        "url": "./5g",
+        "icon": "assets/icons/smartphone.svg",
+        "url": "./apps/5g",
         "tags": [
           "NETWORK",
           "UTILITY"
@@ -34,8 +34,8 @@
       {
         "title": "Coffee",
         "status": "Coming Soon...",
-        "icon": "icons/coffee.svg",
-        "url": "./Coffee",
+        "icon": "assets/icons/coffee.svg",
+        "url": "./apps/Coffee",
         "tags": [
           "WIDGET",
           "QS TILE"
@@ -44,8 +44,8 @@
       {
         "title": "Jotter",
         "status": "Coming Soon...",
-        "icon": "icons/book-open.svg",
-        "url": "./Jotter",
+        "icon": "assets/icons/book-open.svg",
+        "url": "./apps/Jotter",
         "tags": [
           "OFFLINE",
           "MARKDOWN"
@@ -54,8 +54,8 @@
       {
         "title": "Vault",
         "status": "Coming Soon...",
-        "icon": "icons/shield.svg",
-        "url": "./Vault",
+        "icon": "assets/icons/shield.svg",
+        "url": "./apps/Vault",
         "tags": [
           "SECURITY",
           "PRIVACY"
@@ -70,12 +70,12 @@
       {
         "label": "GitHub",
         "url": "https://www.github.com/onedroid",
-        "icon": "icons/github.svg"
+        "icon": "assets/icons/github.svg"
       },
       {
         "label": "LinkedIn",
         "url": "https://www.linkedin.com/company/onedroid",
-        "icon": "icons/linkedin-icon.svg"
+        "icon": "assets/icons/linkedin-icon.svg"
       }
     ],
     "sections": [
@@ -99,7 +99,7 @@
     "jotter": {
       "title": "Jotter - Notes app",
       "tagline": "A modern, <span class=\"love\">not</span> just another notes app. Focus on speed, simplicity, and privacy. Free, Beautiful and Yours.",
-      "icon": "assets/jotter-icon.png",
+      "icon": "assets/icons/jotter-icon.png",
       "specs": {
         "bio": "<strong>Jotter</strong> is built for an offline-first experience with a beautiful, dynamic UI. Backup and restore your notes easily.",
         "bio_sub": "Built for Minimalists",
@@ -138,7 +138,7 @@
         {
           "title": "Rich Notes",
           "description": "Material You theming with dynamic colors. Multiple view modes (List, Grid) and Haptic feedback.",
-          "icon": "icons/pencil-line.svg",
+          "icon": "assets/icons/pencil-line.svg",
           "tags": [
             "MATERIAL 3",
             "DYNAMIC"
@@ -147,7 +147,7 @@
         {
           "title": "Secure",
           "description": "Lock individual notes with a PIN or pattern. Includes Trash & Archive to keep you organized.",
-          "icon": "icons/lock.svg",
+          "icon": "assets/icons/lock.svg",
           "tags": [
             "LOCK",
             "TRASH"
@@ -156,7 +156,7 @@
         {
           "title": "Offline First",
           "description": "All data is stored locally using Room Database. No cloud sync, no tracking. Your data is yours.",
-          "icon": "icons/wifi-off.svg",
+          "icon": "assets/icons/wifi-off.svg",
           "tags": [
             "LOCAL DB",
             "BACKUP"
