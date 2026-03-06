@@ -22,43 +22,13 @@
     },
     "projects": [
       {
-        "title": "5G",
-        "status": "Coming Soon...",
-        "icon": "assets/icons/smartphone.svg",
-        "url": "./apps/5g",
-        "tags": [
-          "NETWORK",
-          "UTILITY"
-        ]
-      },
-      {
-        "title": "Coffee",
-        "status": "Coming Soon...",
-        "icon": "assets/icons/coffee.svg",
-        "url": "./apps/Coffee",
-        "tags": [
-          "WIDGET",
-          "QS TILE"
-        ]
-      },
-      {
-        "title": "Jotter",
+        "title": "Coming Soon...",
         "status": "Coming Soon...",
         "icon": "assets/icons/book-open.svg",
         "url": "./apps/Jotter",
         "tags": [
           "OFFLINE",
           "MARKDOWN"
-        ]
-      },
-      {
-        "title": "Vault",
-        "status": "Coming Soon...",
-        "icon": "assets/icons/shield.svg",
-        "url": "./apps/Vault",
-        "tags": [
-          "SECURITY",
-          "PRIVACY"
         ]
       }
     ]
@@ -97,7 +67,7 @@
   },
   "apps": {
     "jotter": {
-      "title": "Jotter - Notes app",
+      "title": "Coming Soon...",
       "tagline": "A modern, <span class=\"love\">not</span> just another notes app. Focus on speed, simplicity, and privacy. Free, Beautiful and Yours.",
       "icon": "assets/icons/jotter-icon.png",
       "specs": {
