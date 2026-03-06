@@ -1,0 +1,138 @@
+{
+  "navigation": [
+    {
+      "label": "HOME",
+      "url": "index.html"
+    },
+    {
+      "label": "APPS",
+      "url": "index.html#apps"
+    },
+    {
+      "label": "ABOUT",
+      "url": "pages/about.html"
+    }
+  ],
+  "home": {
+    "hero": {
+      "title": "Simple Secure & Open",
+      "subtitle": "Open-source apps engineered with integrity. No ads, no tracking, and <span class=\"green\">open-source</span> forever.",
+      "github_url": "https://www.github.com/OpenAppsLabs",
+      "show_playstore": false
+    },
+    "projects": [
+      {
+        "title": "Coming Soon...",
+        "status": "Coming Soon...",
+        "icon": "assets/icons/book-open.svg",
+        "url": "./apps/Jotter",
+        "tags": [
+          "OFFLINE",
+          "MARKDOWN"
+        ]
+      }
+    ]
+  },
+  "about": {
+    "title": "ABOUT @OneDroid",
+    "description": "OneDroid is an <span class=\"green\">open-source</span> initiative focused on building simple, secure, and privacy-friendly softwares.",
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://www.github.com/onedroid",
+        "icon": "assets/icons/github.svg"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/company/onedroid",
+        "icon": "assets/icons/linkedin-icon.svg"
+      }
+    ],
+    "sections": [
+      {
+        "title": "(01) WE VALUE",
+        "content": [
+          "OneDroid is an open-source platform dedicated to building modern Android applications with a strong focus on transparency, privacy, and usability. We develop apps in the open so anyone can review the source code, understand how things work, and contribute to making them better. Openness and collaboration are fundamental to how we build software.",
+          "Privacy is another fundamental principle behind OneDroid. Our apps are designed to respect users by avoiding unnecessary tracking, intrusive ads, and hidden data collection. Instead, we focus on creating reliable tools that work exactly as intended while protecting users’ digital freedom.",
+          "OneDroid exists to deliver practical solutions that solve everyday problems without compromising trust or user experience. By keeping our projects open, free, and community-focused, we aim to build a sustainable ecosystem of Android apps that anyone can use, improve, and rely on."
+        ]
+      },
+      {
+        "title": "(02) Maintainer",
+        "content": [
+          "OneDroid is initiated and actively maintained by <span class=\"green\">Tawhid Monowar</span>, who leads the engineering efforts and long-term development strategy of the organization. He designs, builds, and maintains the core applications while ensuring the projects remain open source, secure, and aligned with the mission."
+        ]
+      }
+    ]
+  },
+  "apps": {
+    "jotter": {
+      "title": "Coming Soon...",
+      "tagline": "A modern, <span class=\"love\">not</span> just another notes app. Focus on speed, simplicity, and privacy. Free, Beautiful and Yours.",
+      "icon": "assets/icons/jotter-icon.png",
+      "specs": {
+        "bio": "<strong>Jotter</strong> is built for an offline-first experience with a beautiful, dynamic UI. Backup and restore your notes easily.",
+        "bio_sub": "Built for Minimalists",
+        "download_links": [
+          {
+            "label": "Play Store",
+            "value": "Visit",
+            "url": "https://play.google.com/store/apps/details?id=com.openappslabs.jotter"
+          },
+          {
+            "label": "Direct APK",
+            "value": "Download",
+            "url": "https://github.com/OpenAppsLabs/Jotter/releases/latest/download/app-release.apk"
+          }
+        ]
+      },
+      "screenshots": [
+        {
+          "src": "./screenshots/notes_list.png",
+          "alt": "Notes List Screen"
+        },
+        {
+          "src": "./screenshots/note_editor.png",
+          "alt": "Note Editor Screen"
+        },
+        {
+          "src": "./screenshots/lock_screen.png",
+          "alt": "Secure Lock Screen"
+        },
+        {
+          "src": "./screenshots/notes_list.png",
+          "alt": "Notes Grid View"
+        }
+      ],
+      "features": [
+        {
+          "title": "Rich Notes",
+          "description": "Material You theming with dynamic colors. Multiple view modes (List, Grid) and Haptic feedback.",
+          "icon": "assets/icons/pencil-line.svg",
+          "tags": [
+            "MATERIAL 3",
+            "DYNAMIC"
+          ]
+        },
+        {
+          "title": "Secure",
+          "description": "Lock individual notes with a PIN or pattern. Includes Trash & Archive to keep you organized.",
+          "icon": "assets/icons/lock.svg",
+          "tags": [
+            "LOCK",
+            "TRASH"
+          ]
+        },
+        {
+          "title": "Offline First",
+          "description": "All data is stored locally using Room Database. No cloud sync, no tracking. Your data is yours.",
+          "icon": "assets/icons/wifi-off.svg",
+          "tags": [
+            "LOCAL DB",
+            "BACKUP"
+          ]
+        }
+      ]
+    }
+  }
+}

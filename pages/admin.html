@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | OneDroid CMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.ico">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="admin-body">
+    <div class="container admin-container">
+        <header class="admin-header">
+            <div class="logo">
+                <img src="../assets/icons/onedroid-icon.png" class="onedroid-icon" alt="OneDroid Icon">
+                <span>CMS ADMIN</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">VIEW SITE</a>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-section="home">HOME SETTINGS</div>
+            <div class="tab" data-section="projects">PROJECT LIST</div>
+            <div class="tab" data-section="apps">APP PAGES</div>
+            <div class="tab" data-section="about">ABOUT PAGE</div>
+            <div class="tab" data-section="navigation">NAVIGATION</div>
+            <div class="tab" data-section="raw">RAW JSON</div>
+            <div class="tab" style="color: var(--accent-green)" data-section="settings">GITHUB SETTINGS</div>
+        </div>
+
+        <form id="admin-form">
+            <!-- Settings Section -->
+            <section id="section-settings" class="admin-section hidden">
+                <h2>GitHub Configuration</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.8rem;">
+                    Configure your GitHub repository to allow direct saving.
+                    Tokens are stored locally in your browser.
+                </p>
+                <div class="form-group">
+                    <label>GitHub User / Organization</label>
+                    <input type="text" class="form-control" id="gh-owner" placeholder="e.g. onedroid">
+                </div>
+                <div class="form-group">
+                    <label>Repository Name</label>
+                    <input type="text" class="form-control" id="gh-repo" placeholder="e.g. onedroid.github.io">
+                </div>
+                <div class="form-group">
+                    <label>Branch</label>
+                    <input type="text" class="form-control" id="gh-branch" value="main">
+                </div>
+                <div class="form-group">
+                    <label>Personal Access Token (PAT)</label>
+                    <input type="password" class="form-control" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
+                </div>
+                <button type="button" class="btn btn-outline btn-admin" id="save-settings">SAVE CONFIG</button>
+            </section>
+
+            <!-- Navigation Section -->
+            <section id="section-navigation" class="admin-section hidden">
+                <h2>Navigation Items</h2>
+                <div id="nav-items"></div>
+                <button type="button" class="btn btn-outline btn-admin mt-10" id="add-nav">ADD LINK</button>
+            </section>
+
+            <!-- Home Section -->
+            <section id="section-home" class="admin-section">
+                <h2>Hero Section (Home)</h2>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" name="home.hero.title">
+                </div>
+                <div class="form-group">
+                    <label>Subtitle (HTML allowed)</label>
+                    <textarea class="form-control" name="home.hero.subtitle"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>GitHub URL</label>
+                    <input type="text" class="form-control" name="home.hero.github_url">
+                </div>
+                <div class="form-group">
+                    <label>Show Playstore Link</label>
+                    <select class="form-control" name="home.hero.show_playstore">
+                        <option value="true">YES</option>
+                        <option value="false">NO</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="section-projects" class="admin-section hidden">
+                <h2>Managed Projects</h2>
+                <div id="project-items"></div>
+                <button type="button" class="btn btn-outline btn-admin mt-10" id="add-project">ADD NEW PROJECT</button>
+            </section>
+
+            <!-- About Section -->
+            <section id="section-about" class="admin-section hidden">
+                <h2>About Page Content</h2>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" name="about.title">
+                </div>
+                <div class="form-group">
+                    <label>Description (Hero Subtitle)</label>
+                    <textarea class="form-control" name="about.description"></textarea>
+                </div>
+                <div id="about-sections"></div>
+                <button type="button" class="btn btn-outline btn-admin mt-10" id="add-about-section">ADD
+                    SECTION</button>
+            </section>
+
+            <!-- App Details Section (Manual editor for specific apps) -->
+            <section id="section-apps" class="admin-section hidden">
+                <h2>Specific App Data (e.g. Jotter)</h2>
+                <p style="color: grey; font-size: small; margin-bottom: 20px;">Detailed metadata for specialized pages.
+                </p>
+                <div class="form-group">
+                    <label>Jotter Hero Title</label>
+                    <input type="text" class="form-control" name="apps.jotter.title">
+                </div>
+                <div class="form-group">
+                    <label>Jotter Tagline</label>
+                    <textarea class="form-control" name="apps.jotter.tagline"></textarea>
+                </div>
+            </section>
+
+            <!-- Raw JSON for debugging/copying -->
+            <section id="section-raw" class="admin-section hidden">
+                <h2>Direct JSON Editor</h2>
+                <textarea class="form-control" id="raw-json"
+                    style="height: 500px; font-family: monospace; font-size: 0.9rem;"></textarea>
+            </section>
+        </form>
+
+        <div class="admin-actions">
+            <button class="btn btn-outline btn-admin btn-danger" onclick="location.reload()">RESET</button>
+            <button class="btn btn-outline btn-admin" id="export-json">DOWNLOAD</button>
+            <button class="btn btn-outline btn-admin green" style="background: rgba(0,247,0,0.1);" id="save-github">SAVE
+                TO GITHUB</button>
+        </div>
+    </div>
+
+    <script>
+        let initialData = null;
+
+        async function init() {
+            // Load GitHub Settings
+            document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
+            document.getElementById('gh-repo').value = localStorage.getItem('gh-repo') || '';
+            document.getElementById('gh-branch').value = localStorage.getItem('gh-branch') || 'main';
+            document.getElementById('gh-token').value = localStorage.getItem('gh-token') || '';
+
+            try {
+                const res = await fetch('../data/content.json');
+                initialData = await res.json();
+                loadDataIntoForm(initialData);
+            } catch (err) {
+                console.error("Failed to load JSON:", err);
+                alert("Error: content.json not found or corrupted.");
+            }
+        }
+
+        document.getElementById('save-settings').onclick = () => {
+            localStorage.setItem('gh-owner', document.getElementById('gh-owner').value);
+            localStorage.setItem('gh-repo', document.getElementById('gh-repo').value);
+            localStorage.setItem('gh-branch', document.getElementById('gh-branch').value);
+            localStorage.setItem('gh-token', document.getElementById('gh-token').value);
+            alert("Settings saved locally!");
+        };
+
+        function loadDataIntoForm(data) {
+            // Fill basic fields
+            document.querySelectorAll('[name]').forEach(input => {
+                const path = input.name.split('.');
+                let value = path.reduce((obj, key) => obj && obj[key], data);
+                if (value !== undefined) input.value = value;
+            });
+
+            // Navigation
+            const navContainer = document.getElementById('nav-items');
+            navContainer.innerHTML = '';
+            data.navigation.forEach((nav, idx) => {
+                navContainer.appendChild(createNavUI(nav, idx));
+            });
+
+            // Projects
+            const projectContainer = document.getElementById('project-items');
+            projectContainer.innerHTML = '';
+            data.home.projects.forEach((proj, idx) => {
+                projectContainer.appendChild(createProjectUI(proj, idx));
+            });
+
+            // About Sections
+            const aboutContainer = document.getElementById('about-sections');
+            aboutContainer.innerHTML = '';
+            data.about.sections.forEach((section, idx) => {
+                aboutContainer.appendChild(createAboutSectionUI(section, idx));
+            });
+
+            // Raw JSON
+            document.getElementById('raw-json').value = JSON.stringify(data, null, 2);
+        }
+
+        function createNavUI(nav, idx) {
+            const div = document.createElement('div');
+            div.className = 'form-group project-item';
+            div.innerHTML = `
+                <div class="form-group"><label>Label</label><input type="text" class="form-control nav-label" value="${nav.label}"></div>
+                <div class="form-group"><label>URL</label><input type="text" class="form-control nav-url" value="${nav.url}"></div>
+                <button type="button" class="btn btn-outline btn-admin btn-danger remove-btn" onclick="this.parentElement.remove()">REMOVE</button>
+            `;
+            return div;
+        }
+
+        function createAboutSectionUI(section, idx) {
+            const div = document.createElement('div');
+            div.className = 'project-item';
+            div.innerHTML = `
+                <div class="form-group"><label>Title</label><input type="text" class="form-control about-sec-title" value="${section.title}"></div>
+                <div class="form-group"><label>Content (Enter each paragraph on a new line)</label>
+                <textarea class="form-control about-sec-content">${section.content.join('\n')}</textarea></div>
+                <button type="button" class="btn btn-outline btn-admin btn-danger remove-btn" onclick="this.parentElement.remove()">REMOVE</button>
+            `;
+            return div;
+        }
+
+        function createProjectUI(proj, idx) {
+            const div = document.createElement('div');
+            div.className = 'project-item';
+            div.innerHTML = `
+                <div class="form-group"><label>Title</label><input type="text" class="form-control proj-title" value="${proj.title}"></div>
+                <div class="form-group"><label>Status</label><input type="text" class="form-control proj-status" value="${proj.status}"></div>
+                <div class="form-group"><label>Icon Path</label><input type="text" class="form-control proj-icon" value="${proj.icon || ''}"></div>
+                <div class="form-group"><label>URL</label><input type="text" class="form-control proj-url" value="${proj.url}"></div>
+                <div class="form-group"><label>Tags (Comma separated)</label><input type="text" class="form-control proj-tags" value="${proj.tags ? proj.tags.join(', ') : ''}"></div>
+                <button type="button" class="btn btn-outline btn-admin btn-danger remove-btn" onclick="this.parentElement.remove()">REMOVE</button>
+            `;
+            return div;
+        }
+
+        // Tab Switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+                document.getElementById('section-' + tab.dataset.section).classList.remove('hidden');
+            });
+        });
+
+        // Add Logic
+        document.getElementById('add-nav').onclick = () => {
+            document.getElementById('nav-items').appendChild(createNavUI({ label: '', url: '' }));
+        };
+        document.getElementById('add-project').onclick = () => {
+            document.getElementById('project-items').appendChild(createProjectUI({ title: '', status: '', icon: '', url: '', tags: [] }));
+        };
+        document.getElementById('add-about-section').onclick = () => {
+            document.getElementById('about-sections').appendChild(createAboutSectionUI({ title: '', content: [] }));
+        };
+
+        // Export/Save
+        function collectData() {
+            const data = JSON.parse(JSON.stringify(initialData));
+
+            // Basic Fields
+            document.querySelectorAll('[name]').forEach(input => {
+                const path = input.name.split('.');
+                let obj = data;
+                for (let i = 0; i < path.length - 1; i++) {
+                    if (!obj[path[i]]) obj[path[i]] = {};
+                    obj = obj[path[i]];
+                }
+                let val = input.value;
+                if (val === 'true') val = true;
+                if (val === 'false') val = false;
+                obj[path[path.length - 1]] = val;
+            });
+
+            // Navigation
+            data.navigation = Array.from(document.querySelectorAll('#nav-items .project-item')).map(item => ({
+                label: item.querySelector('.nav-label').value,
+                url: item.querySelector('.nav-url').value
+            }));
+
+            // Projects
+            data.home.projects = Array.from(document.querySelectorAll('#project-items .project-item')).map(item => ({
+                title: item.querySelector('.proj-title').value,
+                status: item.querySelector('.proj-status').value,
+                icon: item.querySelector('.proj-icon').value,
+                url: item.querySelector('.proj-url').value,
+                tags: item.querySelector('.proj-tags').value.split(',').map(t => t.trim()).filter(t => t)
+            }));
+
+            // About Sections
+            data.about.sections = Array.from(document.querySelectorAll('#about-sections .project-item')).map(item => ({
+                title: item.querySelector('.about-sec-title').value,
+                content: item.querySelector('.about-sec-content').value.split('\n').filter(p => p.trim())
+            }));
+
+            return data;
+        }
+
+        document.getElementById('export-json').onclick = () => {
+            const data = collectData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'content.json';
+            a.click();
+        };
+
+        // GitHub Integration Logic
+        document.getElementById('save-github').onclick = async () => {
+            const owner = localStorage.getItem('gh-owner');
+            const repo = localStorage.getItem('gh-repo');
+            const branch = localStorage.getItem('gh-branch');
+            const token = localStorage.getItem('gh-token');
+
+            if (!owner || !repo || !token) {
+                alert("Please configure GitHub settings first!");
+                document.querySelector('[data-section="settings"]').click();
+                return;
+            }
+
+            const btn = document.getElementById('save-github');
+            const originalText = btn.innerText;
+            btn.innerText = "SAVING...";
+            btn.disabled = true;
+
+            try {
+                const data = collectData();
+                const path = 'data/content.json';
+                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+                // 1. Get the current file SHA
+                const getFile = await fetch(apiUrl + `?ref=${branch}`, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+
+                let sha = null;
+                if (getFile.ok) {
+                    const fileData = await getFile.json();
+                    sha = fileData.sha;
+                }
+
+                // 2. Push the update
+                const content = b64EncodeUnicode(JSON.stringify(data, null, 2));
+                const pushFile = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: "CMS Update: content.json",
+                        content: content,
+                        sha: sha,
+                        branch: branch
+                    })
+                });
+
+                if (pushFile.ok) {
+                    alert("Successfully saved to GitHub! Site will update in a few minutes.");
+                } else {
+                    const err = await pushFile.json();
+                    throw new Error(err.message);
+                }
+            } catch (err) {
+                console.error("GitHub Save Error:", err);
+                alert("Error saving to GitHub: " + err.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // Unicode safe Base64 encoding
+        function b64EncodeUnicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+                function (match, p1) {
+                    return String.fromCharCode('0x' + p1);
+                }));
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

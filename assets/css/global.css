@@ -1,0 +1,709 @@
+/* src/styles/global.css */
+
+/* =========================================
+   1. VARIABLES & THEME
+   ========================================= */
+:root {
+  /* Default (Dark Mode) */
+  --bg-color: #000000;
+  --card-bg: #121212;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --accent-red: #d71921;
+  --accent-green: #00f700;
+  --border-color: #333333;
+
+  --radius-large: 32px;
+  --radius-small: 100px;
+
+  --font-mono: 'Roboto Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Light Mode Overrides */
+:root.light-theme {
+  --bg-color: #ffffff;
+  --card-bg: #f4f4f5;
+  --text-primary: #18181b;
+  --text-secondary: #71717a;
+  --border-color: #e4e4e7;
+}
+
+/* =========================================
+   2. RESET & GLOBAL
+   ========================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* =========================================
+   3. LAYOUT UTILITIES
+   ========================================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* =========================================
+   4. NAVBAR
+   ========================================= */
+nav {
+  padding: 40px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+}
+
+.logo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.nav-links a:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+#theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+#theme-toggle:hover {
+  color: var(--text-primary);
+}
+
+/* =========================================
+   5. HERO SECTION
+   ========================================= */
+.hero {
+  padding: 80px 0 100px;
+  max-width: 900px;
+}
+
+h1 {
+  font-family: var(--font-mono);
+  font-size: clamp(2.5rem, 3.8vw, 4rem);
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  color: var(--text-primary);
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.green {
+  color: var(--accent-green);
+}
+
+/* =========================================
+   6. BUTTONS
+   ========================================= */
+.btn-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: var(--radius-small);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid var(--text-primary);
+}
+
+.btn-solid {
+  background-color: var(--text-primary);
+  color: var(--bg-color);
+}
+
+.btn-solid:hover {
+  background-color: var(--accent-green);
+  border-color: var(--accent-green);
+  color: var(--text-primary);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-outline:hover {
+  border-color: var(--text-primary);
+}
+
+/* =========================================
+   7. BENTO GRID & WIDGETS
+   ========================================= */
+.section-label {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.section-label::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 100px;
+}
+
+.last {
+  margin-bottom: 100px !important;
+}
+/* Projects Carousel */
+.carousel-wrapper {
+  position: relative;
+  margin-bottom: 80px;
+  padding: 0 30px;
+  /* Shrink from sides */
+}
+
+.projects-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 24px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scroll-behavior: smooth;
+}
+
+.projects-carousel::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+.projects-carousel .widget-link {
+  flex: 0 0 calc(33.333% - 16px);
+  min-width: 300px;
+  scroll-snap-align: start;
+}
+
+/* Arrows */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  right: 5px;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  /* Allow clicking through the container */
+  z-index: 10;
+  padding: 0 5px;
+}
+
+.arrow-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  /* Re-enable pointer events for buttons */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#prevBtn {
+  transform: translateX(-100%);
+}
+
+#nextBtn {
+  transform: translateX(100%);
+}
+
+.arrow-btn:hover {
+  background: var(--text-primary);
+  color: var(--bg-color);
+  border-color: var(--text-primary);
+  transform: scale(1.1);
+}
+
+#prevBtn:hover {
+  transform: translateX(-100%) scale(1.1);
+}
+
+#nextBtn:hover {
+  transform: translateX(100%) scale(1.1);
+}
+
+.arrow-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+
+@media (max-width: 1024px) {
+  .projects-carousel .widget-link {
+    flex: 0 0 calc(50% - 12px);
+  }
+}
+
+@media (max-width: 768px) {
+  .projects-carousel .widget-link {
+    flex: 0 0 100%;
+  }
+
+  .carousel-nav {
+    display: none;
+    /* Hide arrows on mobile as touch swiping is better */
+  }
+
+  .carousel-wrapper {
+    margin-bottom: 60px;
+  }
+}
+
+.widget-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.widget {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-large);
+  padding: 24px;
+  /* Reduced from 32px */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 300px;
+  /* Reduced from 350px */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  height: 100%;
+  border: 1px solid transparent;
+}
+
+.widget:hover {
+  transform: translateY(-5px);
+  background-color: var(--border-color);
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.app-icon {
+  width: 54px;
+  height: 54px;
+  background: #262626;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+:root.light-theme .app-icon {
+  background: #e4e4e7;
+}
+
+.app-icon img {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.widget h3 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+}
+
+.widget p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.pill {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 6px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small);
+  color: var(--text-secondary);
+}
+
+/* =========================================
+   8. INFO GRID / SPECS
+   ========================================= */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 80px;
+}
+
+.glass-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-large);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bio-text {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.bio-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.bio-sub {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stack-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.stack-item:last-child {
+  border-bottom: none;
+}
+
+.stack-item span:last-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* =========================================
+   9. PRIVACY POLICY STYLES (Tight & Wide)
+   ========================================= */
+
+/* Wider container so it isn't "squeezed" */
+.policy-layout {
+  max-width: 1200px;
+  /* Changed from 960px to match .container */
+  margin: 40px auto 80px;
+  width: 100%;
+}
+
+/* Header - Compact */
+.policy-layout header {
+  margin-bottom: 32px;
+  /* Reduced from 60px */
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 24px;
+}
+
+.breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-red);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.policy-layout h1 {
+  font-family: var(--font-sans);
+  font-size: 2.5rem;
+  /* Reduced size for better fit */
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.meta {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+/* TL;DR Box - Tighter */
+.tldr-box {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px 20px;
+  /* Tighter padding */
+  border-radius: 8px;
+  margin-bottom: 40px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  border-left: 3px solid var(--accent-red);
+}
+
+:root.light-theme .tldr-box {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Content Sections - Less "Spacey" */
+.content section {
+  margin-bottom: 32px;
+  /* Reduced from 60px */
+}
+
+.content h2 {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* Lists - Compact & Clean */
+.content ul {
+  margin-top: 12px;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,
+      minmax(300px, 1fr));
+  /* Two columns if space allows */
+  gap: 20px;
+}
+
+.content li {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.content li strong {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.muted {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: block;
+}
+
+/* Link */
+.link-highlight {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-red);
+}
+
+/* =========================================
+   10. FOOTER
+   ========================================= */
+footer {
+  border-top: 1px solid var(--border-color);
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+}
+
+.copyright {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* =========================================
+   11. RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+  .hero {
+    padding: 40px 0 60px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .widget {
+    min-height: auto;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   FIX FOR ICONS
+   ========================================= */
+
+/* 1. Global Icon Sizing */
+.btn img,
+.logo-icon,
+.app-icon img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+
+.onedroid-icon {
+  font-family: var(--font-mono);
+  display: block;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+/* 2. Icons in Dark Backgrounds (Invert to White) */
+/* This handles the app cards and the outline button */
+.app-icon img,
+.btn-outline img,
+.logo-icon {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+/* 3. Icons in Light Backgrounds (Invert to Black) */
+/* Since .btn-solid is white, we need the icon to be black */
+.btn-solid img {
+  filter: brightness(0);
+  /* Forces the icon to be pure black */
+  opacity: 1;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}

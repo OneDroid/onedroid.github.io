@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jotter - A modern, open-source offline-first note-taking app.">
+    <title>Jotter | Open Apps Labs</title>
+
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/icons/code-xml.svg">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="../../assets/js/components.js" defer></script>
+
+    <style>
+        .jotter-specs {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .privacy-link-wrapper {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .privacy-link {
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            font-size: .85rem;
+            text-decoration: underline;
+            transition: color .2s;
+        }
+
+        .privacy-link:hover {
+            color: var(--text-primary);
+        }
+
+        @media(max-width: 768px) {
+            .jotter-specs {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
+        }
+
+        /* Screenshots Section */
+        .screenshots-section {
+            margin-bottom: 100px;
+            position: relative;
+        }
+
+        .screenshot-carousel-wrapper {
+            position: relative;
+            padding: 0 40px;
+            /* Space for arrows */
+        }
+
+        .screenshot-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 20px 0 40px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+        }
+
+        .screenshot-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .screenshot-item {
+            flex: 0 0 280px;
+            aspect-ratio: 9 / 19;
+            scroll-snap-align: start;
+            border-radius: 32px;
+            overflow: hidden;
+            border: 4px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #000;
+            position: relative;
+        }
+
+        .screenshot-item:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--text-primary);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Mobile Adjustments */
+        @media(max-width: 768px) {
+            .screenshot-carousel-wrapper {
+                padding: 0;
+            }
+
+            .screenshot-item {
+                flex: 0 0 220px;
+            }
+
+            .screenshot-nav {
+                display: none;
+            }
+        }
+
+        /* Navigation Arrows */
+        .screenshot-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: scale(1.1);
+        }
+
+        .nav-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            cursor: zoom-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .screenshot-item {
+            cursor: zoom-in;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <site-nav root="../../"></site-nav>
+
+        <hero-section root="../../" page="jotter"></hero-section>
+
+        <jotter-specs root="../../"></jotter-specs>
+
+        <screenshot-carousel root="../../"></screenshot-carousel>
+
+        <feature-grid root="../../"></feature-grid>
+
+        <div class="privacy-link-wrapper">
+            <a href="./privacy" class="privacy-link">View Privacy Policy</a>
+        </div>
+
+        <site-footer root="../../"></site-footer>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged Screenshot">
+    </div>
+
+</body>
+
+</html>
