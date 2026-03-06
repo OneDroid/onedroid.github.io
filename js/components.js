@@ -1,15 +1,31 @@
+let siteData = null;
+
+async function fetchContent(rootPath = './') {
+    if (siteData) return siteData;
+    try {
+        const response = await fetch(`${rootPath}js/content.json`);
+        siteData = await response.json();
+        return siteData;
+    } catch (error) {
+        console.error('Error loading content:', error);
+        return null;
+    }
+}
+
 class SiteNav extends HTMLElement {
-    connectedCallback() {
-        this.render();
-        window.addEventListener('hashchange', () => this.render());
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        if (data) {
+            this.render(data.navigation, rootPath);
+        }
+        window.addEventListener('hashchange', () => this.render(data.navigation, rootPath));
     }
 
-    render() {
-        const rootPath = this.hasAttribute('root') ? this.getAttribute('root') : './';
+    render(navLinks, rootPath) {
         const currentPath = window.location.pathname;
         const currentHash = window.location.hash;
 
-        // Determine which link is active
         const isHome = currentPath.endsWith('/') || currentPath.endsWith('index.html');
         const isAbout = currentPath.includes('about.html');
         const isAppsActive = currentHash === '#apps';
@@ -21,24 +37,275 @@ class SiteNav extends HTMLElement {
                 <a href="${rootPath}index.html">@onedroid</a>
             </div>
             <div class="nav-links">
-                <a href="${rootPath}index.html" class="${isHome && !isAppsActive ? 'green' : ''}">HOME</a>
-                <a href="${rootPath}index.html#apps" class="${isAppsActive ? 'green' : ''}">APPS</a>
-                <a href="${rootPath}pages/about.html" class="${isAbout ? 'green' : ''}">ABOUT</a>
+                ${navLinks.map(link => {
+                    const isActive = (link.label === 'HOME' && isHome && !isAppsActive) ||
+                                   (link.label === 'APPS' && isAppsActive) ||
+                                   (link.label === 'ABOUT' && isAbout);
+                    return `<a href="${rootPath}${link.url}" class="${isActive ? 'green' : ''}">${link.label}</a>`;
+                }).join('')}
             </div>
         </nav>
         `;
     }
 }
 
+class HeroSection extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const page = this.getAttribute('page') || 'home';
+        const data = await fetchContent(rootPath);
+        if (!data) return;
+
+        let heroData;
+        if (page === 'home') heroData = data.home.hero;
+        else if (page === 'about') heroData = { title: data.about.title, subtitle: data.about.description, links: data.about.links };
+        else if (page === 'jotter') heroData = { title: data.apps.jotter.title, subtitle: data.apps.jotter.tagline, icon: data.apps.jotter.icon };
+
+        if (!heroData) return;
+
+        this.className = 'hero';
+        this.innerHTML = `
+            ${heroData.icon ? `<img src="${rootPath}${heroData.icon}" alt="App Icon" class="app-icon">` : ''}
+            <h1 ${page === 'about' ? 'style="text-transform: none;"' : ''}>${heroData.title}</h1>
+            <p>${heroData.subtitle}</p>
+            <div class="btn-group">
+                ${page === 'home' ? `
+                    <a href="${heroData.github_url}" class="btn btn-outline">
+                        <img src="${rootPath}icons/github.svg" alt="GitHub"> GitHub
+                    </a>
+                    <a class="btn btn-outline disabled" aria-disabled="true">
+                        <img src="${rootPath}icons/smartphone.svg" alt="Playstore"> Playstore (Coming Soon)
+                    </a>
+                ` : ''}
+                ${page === 'about' ? heroData.links.map(l => `
+                    <a href="${l.url}" target="_blank" class="btn btn-outline">
+                        <img src="${rootPath}${l.icon}" alt="${l.label}"> ${l.label}
+                    </a>
+                `).join('') : ''}
+            </div>
+        `;
+    }
+}
+
+class ProjectCarousel extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        if (!data || !data.home.projects) return;
+
+        this.innerHTML = `
+            <div class="carousel-wrapper">
+                <div class="carousel-nav">
+                    <button class="arrow-btn" id="prevBtn" aria-label="Previous Project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                    </button>
+                    <button class="arrow-btn" id="nextBtn" aria-label="Next Project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                    </button>
+                </div>
+                <div class="projects-carousel" id="projectCarousel">
+                    ${data.home.projects.map(p => `
+                        <a href="${p.url}" class="widget-link">
+                            <article class="widget">
+                                <div>
+                                    <div class="widget-header">
+                                        <div class="app-icon">
+                                            <img src="${rootPath}${p.icon}" alt="${p.title}">
+                                        </div>
+                                        <svg color="#444" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+                                    </div>
+                                    <h3>${p.title}</h3>
+                                    <p>${p.status}</p>
+                                </div>
+                                <div class="feature-pills">
+                                    ${p.tags.map(t => `<span class="pill">${t}</span>`).join('')}
+                                </div>
+                            </article>
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        this.initCarousel();
+    }
+
+    initCarousel() {
+        const carousel = this.querySelector('#projectCarousel');
+        const prevBtn = this.querySelector('#prevBtn');
+        const nextBtn = this.querySelector('#nextBtn');
+        if (!carousel || !prevBtn || !nextBtn) return;
+
+        const getScrollAmount = () => carousel.querySelector('.widget-link').offsetWidth + 24;
+        const scrollNext = () => {
+            if (carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - 1)) carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            else carousel.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        };
+        const scrollPrev = () => {
+            if (carousel.scrollLeft <= 0) carousel.scrollTo({ left: carousel.scrollWidth, behavior: 'smooth' });
+            else carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        };
+
+        prevBtn.addEventListener('click', scrollPrev);
+        nextBtn.addEventListener('click', scrollNext);
+        let autoScroll = setInterval(scrollNext, 4000);
+        carousel.addEventListener('mouseenter', () => clearInterval(autoScroll));
+        carousel.addEventListener('mouseleave', () => autoScroll = setInterval(scrollNext, 4000));
+    }
+}
+
+class AboutContent extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        if (!data || !data.about || !data.about.sections) return;
+
+        this.innerHTML = data.about.sections.map((section, idx) => `
+            <div class="section-label">${section.title}</div>
+            <div style="margin-bottom: 60px;">
+                ${section.content.map((p, pIdx) => `
+                    <p class="bio-text ${idx === data.about.sections.length - 1 && pIdx === section.content.length - 1 ? 'last' : ''}">${p}</p>
+                `).join('')}
+            </div>
+        `).join('');
+    }
+}
+
+class JotterSpecs extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        if (!data || !data.apps.jotter.specs) return;
+        const specs = data.apps.jotter.specs;
+
+        this.innerHTML = `
+            <div class="section-label" id="features">(01) FEATURES</div>
+            <div class="info-grid jotter-specs">
+                <div class="glass-panel">
+                    <p class="bio-text">${specs.bio}</p>
+                    <p class="bio-sub">${specs.bio_sub}</p>
+                </div>
+                <div class="glass-panel" style="padding: 30px">
+                    <div class="stack-list">
+                        <div class="stack-item"><span>Download</span><span>Source</span></div>
+                        ${specs.download_links.map(l => `
+                            <div class="stack-item"><span>${l.label}</span><span><a href="${l.url}" target="_blank">${l.value}</a></span></div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+class ScreenshotCarousel extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        if (!data || !data.apps.jotter.screenshots) return;
+
+        this.innerHTML = `
+            <div class="section-label" id="screenshots">(02) SCREENSHOTS</div>
+            <section class="screenshots-section">
+                <div class="screenshot-carousel-wrapper">
+                    <div class="screenshot-nav">
+                        <button class="nav-btn" id="shotPrev" aria-label="Previous">
+                            <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+                        </button>
+                        <button class="nav-btn" id="shotNext" aria-label="Next">
+                            <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+                        </button>
+                    </div>
+                    <div class="screenshot-carousel" id="shotCarousel">
+                        ${data.apps.jotter.screenshots.map(s => `
+                            <div class="screenshot-item">
+                                <img src="${s.src}" alt="${s.alt}">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </section>
+        `;
+        this.initLightbox();
+        this.initCarousel();
+    }
+
+    initCarousel() {
+        const carousel = this.querySelector('#shotCarousel');
+        const prevBtn = this.querySelector('#shotPrev');
+        const nextBtn = this.querySelector('#shotNext');
+        if (!carousel || !prevBtn || !nextBtn) return;
+        const scrollAmount = 300;
+        prevBtn.onclick = () => carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        nextBtn.onclick = () => carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+
+    initLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        if (!lightbox || !lightboxImg) return;
+        this.querySelectorAll('.screenshot-item img').forEach(img => {
+            img.onclick = () => {
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+        });
+        lightbox.onclick = () => {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+    }
+}
+
+class FeatureGrid extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        if (!data || !data.apps.jotter.features) return;
+
+        this.innerHTML = `
+            <div class="section-label" id="specs">(03) More Relevent</div>
+            <div class="bento-grid">
+                ${data.apps.jotter.features.map(f => `
+                    <article class="widget">
+                        <div>
+                            <div class="widget-header">
+                                <div class="app-icon">
+                                    <img src="${rootPath}${f.icon}" alt="${f.title} Icon">
+                                </div>
+                            </div>
+                            <h3>${f.title}</h3>
+                            <p>${f.description}</p>
+                        </div>
+                        <div class="feature-pills">
+                            ${f.tags.map(t => `<span class="pill">${t}</span>`).join('')}
+                        </div>
+                    </article>
+                `).join('')}
+            </div>
+        `;
+    }
+}
+
 class SiteFooter extends HTMLElement {
     connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
         this.innerHTML = `
         <footer>
-            <p class="copyright">OneDroid &copy; ${new Date().getFullYear()}</p>
+            <p class="copyright">OneDroid &copy; ${new Date().getFullYear()} 
+               <a href="${rootPath}pages/admin.html" style="opacity: 0.1; margin-left: 10px;">.</a>
+            </p>
         </footer>
         `;
     }
 }
 
+// Register Components
 customElements.define('site-nav', SiteNav);
+customElements.define('hero-section', HeroSection);
+customElements.define('project-carousel', ProjectCarousel);
+customElements.define('about-content', AboutContent);
+customElements.define('jotter-specs', JotterSpecs);
+customElements.define('screenshot-carousel', ScreenshotCarousel);
+customElements.define('feature-grid', FeatureGrid);
 customElements.define('site-footer', SiteFooter);
