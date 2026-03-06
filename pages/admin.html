@@ -40,7 +40,7 @@
             <section id="section-settings" class="admin-section hidden">
                 <h2>GitHub Configuration</h2>
                 <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.8rem;">
-                    Configure your GitHub repository to allow direct saving. 
+                    Configure your GitHub repository to allow direct saving.
                     Tokens are stored locally in your browser.
                 </p>
                 <div class="form-group">
@@ -112,13 +112,15 @@
                     <textarea class="form-control" name="about.description"></textarea>
                 </div>
                 <div id="about-sections"></div>
-                <button type="button" class="btn btn-outline btn-admin mt-10" id="add-about-section">ADD SECTION</button>
+                <button type="button" class="btn btn-outline btn-admin mt-10" id="add-about-section">ADD
+                    SECTION</button>
             </section>
 
             <!-- App Details Section (Manual editor for specific apps) -->
             <section id="section-apps" class="admin-section hidden">
                 <h2>Specific App Data (e.g. Jotter)</h2>
-                <p style="color: grey; font-size: small; margin-bottom: 20px;">Detailed metadata for specialized pages.</p>
+                <p style="color: grey; font-size: small; margin-bottom: 20px;">Detailed metadata for specialized pages.
+                </p>
                 <div class="form-group">
                     <label>Jotter Hero Title</label>
                     <input type="text" class="form-control" name="apps.jotter.title">
@@ -132,14 +134,16 @@
             <!-- Raw JSON for debugging/copying -->
             <section id="section-raw" class="admin-section hidden">
                 <h2>Direct JSON Editor</h2>
-                <textarea class="form-control" id="raw-json" style="height: 500px; font-family: monospace; font-size: 0.9rem;"></textarea>
+                <textarea class="form-control" id="raw-json"
+                    style="height: 500px; font-family: monospace; font-size: 0.9rem;"></textarea>
             </section>
         </form>
 
         <div class="admin-actions">
             <button class="btn btn-outline btn-admin btn-danger" onclick="location.reload()">RESET</button>
             <button class="btn btn-outline btn-admin" id="export-json">DOWNLOAD</button>
-            <button class="btn btn-outline btn-admin green" style="background: rgba(0,247,0,0.1);" id="save-github">SAVE TO GITHUB</button>
+            <button class="btn btn-outline btn-admin green" style="background: rgba(0,247,0,0.1);" id="save-github">SAVE
+                TO GITHUB</button>
         </div>
     </div>
 
@@ -253,13 +257,13 @@
 
         // Add Logic
         document.getElementById('add-nav').onclick = () => {
-            document.getElementById('nav-items').appendChild(createNavUI({label:'', url:''}));
+            document.getElementById('nav-items').appendChild(createNavUI({ label: '', url: '' }));
         };
         document.getElementById('add-project').onclick = () => {
-            document.getElementById('project-items').appendChild(createProjectUI({title:'', status:'', icon:'', url:'', tags:[]}));
+            document.getElementById('project-items').appendChild(createProjectUI({ title: '', status: '', icon: '', url: '', tags: [] }));
         };
         document.getElementById('add-about-section').onclick = () => {
-            document.getElementById('about-sections').appendChild(createAboutSectionUI({title:'', content:[]}));
+            document.getElementById('about-sections').appendChild(createAboutSectionUI({ title: '', content: [] }));
         };
 
         // Export/Save
@@ -341,7 +345,7 @@
                 const getFile = await fetch(apiUrl + `?ref=${branch}`, {
                     headers: { 'Authorization': `token ${token}` }
                 });
-                
+
                 let sha = null;
                 if (getFile.ok) {
                     const fileData = await getFile.json();
@@ -382,9 +386,9 @@
         // Unicode safe Base64 encoding
         function b64EncodeUnicode(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
-                function(match, p1) {
+                function (match, p1) {
                     return String.fromCharCode('0x' + p1);
-            }));
+                }));
         }
 
         init();

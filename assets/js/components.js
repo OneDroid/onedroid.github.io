@@ -38,11 +38,11 @@ class SiteNav extends HTMLElement {
             </div>
             <div class="nav-links">
                 ${navLinks.map(link => {
-                    const isActive = (link.label === 'HOME' && isHome && !isAppsActive) ||
-                                   (link.label === 'APPS' && isAppsActive) ||
-                                   (link.label === 'ABOUT' && isAbout);
-                    return `<a href="${rootPath}${link.url}" class="${isActive ? 'green' : ''}">${link.label}</a>`;
-                }).join('')}
+            const isActive = (link.label === 'HOME' && isHome && !isAppsActive) ||
+                (link.label === 'APPS' && isAppsActive) ||
+                (link.label === 'ABOUT' && isAbout);
+            return `<a href="${rootPath}${link.url}" class="${isActive ? 'green' : ''}">${link.label}</a>`;
+        }).join('')}
             </div>
         </nav>
         `;
