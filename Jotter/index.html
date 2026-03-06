@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jotter - A modern, open-source offline-first note-taking app.">
+    <title>Jotter | Open Apps Labs</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="icon" type="image/svg+xml" href="../icons/code-xml.svg">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="../js/components.js" defer></script>
+
+    <style>
+        .jotter-specs {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .privacy-link-wrapper {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .privacy-link {
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            font-size: .85rem;
+            text-decoration: underline;
+            transition: color .2s;
+        }
+
+        .privacy-link:hover {
+            color: var(--text-primary);
+        }
+
+        @media(max-width: 768px) {
+            .jotter-specs {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
+        }
+
+        /* Screenshots Section */
+        .screenshots-section {
+            margin-bottom: 100px;
+            position: relative;
+        }
+
+        .screenshot-carousel-wrapper {
+            position: relative;
+            padding: 0 40px;
+            /* Space for arrows */
+        }
+
+        .screenshot-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 20px 0 40px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+        }
+
+        .screenshot-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .screenshot-item {
+            flex: 0 0 280px;
+            aspect-ratio: 9 / 19;
+            scroll-snap-align: start;
+            border-radius: 32px;
+            overflow: hidden;
+            border: 4px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #000;
+            position: relative;
+        }
+
+        .screenshot-item:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--text-primary);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Mobile Adjustments */
+        @media(max-width: 768px) {
+            .screenshot-carousel-wrapper {
+                padding: 0;
+            }
+
+            .screenshot-item {
+                flex: 0 0 220px;
+            }
+
+            .screenshot-nav {
+                display: none;
+            }
+        }
+
+        /* Navigation Arrows */
+        .screenshot-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: scale(1.1);
+        }
+
+        .nav-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            cursor: zoom-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .screenshot-item {
+            cursor: zoom-in;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <site-nav root="../"></site-nav>
+
+        <header class="hero">
+
+            <img src="../assets/jotter-icon.png" alt="Jotter App Icon" class="app-icon">
+
+            <h1>Jotter - Notes app</h1>
+            <p>
+                A modern, <span class="love">not</span> just another notes app.
+                Focus on speed, simplicity, and privacy.
+                Free, Beautiful and Yours.
+            </p>
+
+        </header>
+
+        <div class="section-label" id="features">(01) FEATURES</div>
+
+
+        <div class="info-grid jotter-specs">
+            <div class="glass-panel">
+                <p class="bio-text">
+                    <strong>Jotter</strong> is built for an offline-first experience with a
+                    beautiful, dynamic UI.
+                    Backup and restore your notes easily.
+                </p>
+                <p class="bio-sub">Built for Minimalists</p>
+            </div>
+
+            <div class="glass-panel" style="padding: 30px">
+                <div class="stack-list">
+                    <div class="stack-item"><span>Download</span><span>Source</span></div>
+                    <div class="stack-item"><span>Play Store</span><span><a
+                                href="https://play.google.com/store/apps/details?id=com.openappslabs.jotter"
+                                target="_blank">Visit</a></span>
+                    </div>
+                    <div class="stack-item"><span>Direct APK</span><span><a
+                                href="https://github.com/OpenAppsLabs/Jotter/releases/latest/download/app-release.apk"
+                                target="_blank">Download</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="section-label" id="screenshots">(02) SCREENSHOTS</div>
+
+        <section class="screenshots-section">
+            <div class="screenshot-carousel-wrapper">
+                <div class="screenshot-nav">
+                    <button class="nav-btn" id="shotPrev" aria-label="Previous">
+                        <svg viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button class="nav-btn" id="shotNext" aria-label="Next">
+                        <svg viewBox="0 0 24 24">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="screenshot-carousel" id="shotCarousel">
+                    <div class="screenshot-item">
+                        <img src="./screenshots/notes_list.png" alt="Notes List Screen">
+                    </div>
+                    <div class="screenshot-item">
+                        <img src="./screenshots/note_editor.png" alt="Note Editor Screen">
+                    </div>
+                    <div class="screenshot-item">
+                        <img src="./screenshots/lock_screen.png" alt="Secure Lock Screen">
+                    </div>
+                    <div class="screenshot-item">
+                        <img src="./screenshots/notes_list.png" alt="Notes Grid View">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-label" id="specs">(03) More Relevent </div>
+        <div class="bento-grid">
+            <article class="widget">
+                <div>
+                    <div class="widget-header">
+                        <div class="app-icon">
+                            <img src="../icons/pencil-line.svg" alt="Edit Icon">
+                        </div>
+                    </div>
+                    <h3>Rich Notes</h3>
+                    <p>Material You theming with dynamic colors. Multiple view modes (List, Grid)
+                        and Haptic feedback.</p>
+                </div>
+                <div class="feature-pills">
+                    <span class="pill">MATERIAL 3</span>
+                    <span class="pill">DYNAMIC</span>
+                </div>
+            </article>
+
+            <article class="widget">
+                <div>
+                    <div class="widget-header">
+                        <div class="app-icon">
+                            <img src="../icons/lock.svg" alt="Lock Icon">
+                        </div>
+                    </div>
+                    <h3>Secure</h3>
+                    <p>Lock individual notes with a PIN or pattern. Includes Trash & Archive to keep
+                        you organized.</p>
+                </div>
+                <div class="feature-pills">
+                    <span class="pill">LOCK</span>
+                    <span class="pill">TRASH</span>
+                </div>
+            </article>
+
+            <article class="widget">
+                <div>
+                    <div class="widget-header">
+                        <div class="app-icon">
+                            <img src="../icons/wifi-off.svg" alt="Offline Icon">
+                        </div>
+                    </div>
+                    <h3>Offline First</h3>
+                    <p>All data is stored locally using Room Database. No cloud sync, no tracking.
+                        Your data is yours.</p>
+                </div>
+                <div class="feature-pills">
+                    <span class="pill">LOCAL DB</span>
+                    <span class="pill">BACKUP</span>
+                </div>
+            </article>
+        </div>
+
+        <div class="privacy-link-wrapper">
+            <a href="./privacy" class="privacy-link">View Privacy Policy</a>
+        </div>
+
+        <site-footer></site-footer>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged Screenshot">
+    </div>
+
+    <script>
+                const carousel = documen            rousel');
+                         ent.getElementById('shotPrev');
+                const ne            entById('shotNext');
+
+                if (carouse               const scrollAmou                       prevBtn.addEventLis                                                ({ left: -scrollAmount, behavior: 'smooth' });
+                                         nextBtn.addEventListener('click', (                           carousel.scrollBy({ left: scrollAmount,                                    });
+                          tbox Logic
+                               ementById('lightbox');
+                con                    ('lightboxImg');
+                const shotItems = document.quer                mg')                Each(item => {
+                        ite                                                lightboxImg.src = item.src;
+                       x.cl                           dobody.style.overflow = 'hidden'; // Prevent scroll
+                        });
+                });
+
+                lightbox.addEventListener('click', () => {
+                        lightbox.classList.remove('active');
+                        document.body.style.overflow = 'auto'; // Re-enable scroll
+                });
+    </script>
+</body>
+
+</html>
