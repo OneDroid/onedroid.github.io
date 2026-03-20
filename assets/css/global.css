@@ -6,7 +6,8 @@
 :root {
   /* Default (Dark Mode) */
   --bg-color: #010409;
-  --card-bg: #121212;
+  --card-bg: #0d1117;
+  --card-bg-hover: #151b23;
   --text-primary: #ffffff;
   --text-secondary: #888888;
   --accent-red: #d71921;
@@ -104,15 +105,41 @@ nav {
   align-items: center;
 }
 
-.logo {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: -1px;
+.logo-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logo-title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: -1.5px;
   color: var(--text-primary);
+}
+
+.tagline {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.logo-icon {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
 }
 
 .logo svg {
@@ -153,7 +180,7 @@ nav {
    5. HERO SECTION
    ========================================= */
 .hero {
-  padding: 80px 0 100px;
+  padding: 100px 0 100px;
   max-width: 900px;
 }
 
@@ -390,12 +417,12 @@ h1 {
   /* Reduced from 350px */
   transition: transform 0.3s ease, background-color 0.3s ease;
   height: 100%;
-  border: 1px solid transparent;
+  border: 1px solid var(--border-color);
 }
 
 .widget:hover {
   transform: translateY(-5px);
-  background-color: var(--border-color);
+  background-color: var(--card-bg-hover);
 }
 
 .widget-header {
@@ -666,6 +693,10 @@ footer {
    11. RESPONSIVE
    ========================================= */
 @media (max-width: 768px) {
+  .logo-text {
+    display: none;
+  }
+
   .hero {
     padding: 40px 0 60px;
   }
@@ -689,20 +720,10 @@ footer {
 
 /* 1. Global Icon Sizing */
 .btn img,
-.logo-icon,
 .app-icon img {
   display: block;
   width: 18px;
   height: 18px;
-  object-fit: contain;
-}
-
-
-.onedroid-icon {
-  font-family: var(--font-mono);
-  display: block;
-  width: 50px;
-  height: 50px;
   object-fit: contain;
 }
 
