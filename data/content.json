@@ -15,10 +15,12 @@
   ],
   "home": {
     "hero": {
-      "title": "Simple Secure & Open",
+      "title": "Simple, Secure & Open",
       "subtitle": "Open-source apps engineered with integrity. No ads, no tracking, and <span class=\"green\">open-source</span> forever.",
-      "github_url": "https://www.github.com/OpenAppsLabs",
-      "show_playstore": false
+      "github_url": "https://www.github.com/onedroid",
+      "show_playstore": false,
+      "animation": "logcat",
+      "animation_randomize": false
     },
     "projects": [
       {
