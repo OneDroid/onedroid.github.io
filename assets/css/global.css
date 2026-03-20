@@ -5,13 +5,14 @@
    ========================================= */
 :root {
   /* Default (Dark Mode) */
-  --bg-color: #000000;
+  --bg-color: #010409;
   --card-bg: #121212;
   --text-primary: #ffffff;
   --text-secondary: #888888;
   --accent-red: #d71921;
   --accent-green: #00f700;
   --border-color: #333333;
+  --header-footer-bg: #0d1117;
 
   --radius-large: 32px;
   --radius-small: 100px;
@@ -27,6 +28,7 @@
   --text-primary: #18181b;
   --text-secondary: #71717a;
   --border-color: #e4e4e7;
+  --header-footer-bg: #f4f4f5;
 }
 
 /* =========================================
@@ -49,6 +51,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -67,16 +72,33 @@ ul {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+}
+
+.full-width-header {
+  width: 100%;
+  background-color: var(--header-footer-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.full-width-footer {
+  width: 100%;
+  background-color: var(--header-footer-bg);
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
 }
 
 /* =========================================
    4. NAVBAR
    ========================================= */
 nav {
-  padding: 40px 0;
+  padding: 25px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -233,6 +255,7 @@ h1 {
 .last {
   margin-bottom: 100px !important;
 }
+
 /* Projects Carousel */
 .carousel-wrapper {
   position: relative;
@@ -627,12 +650,10 @@ h1 {
    10. FOOTER
    ========================================= */
 footer {
-  border-top: 1px solid var(--border-color);
-  padding: 40px 0;
+  padding: 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: auto;
 }
 
 .copyright {
