@@ -22,28 +22,6 @@
   --font-sans: 'Inter', sans-serif;
 }
 
-/* Light Mode: OS preference */
-@media (prefers-color-scheme: light) {
-  :root:not(.dark-theme) {
-    --bg-color: #ffffff;
-    --card-bg: #f4f4f5;
-    --text-primary: #18181b;
-    --text-secondary: #71717a;
-    --border-color: #e4e4e7;
-    --header-footer-bg: #f4f4f5;
-  }
-}
-
-/* Light Mode: manual class override */
-:root.light-theme {
-  --bg-color: #ffffff;
-  --card-bg: #f4f4f5;
-  --text-primary: #18181b;
-  --text-secondary: #71717a;
-  --border-color: #e4e4e7;
-  --header-footer-bg: #f4f4f5;
-}
-
 /* =========================================
    2. RESET & GLOBAL
    ========================================= */
@@ -162,21 +140,6 @@ nav {
   opacity: 1;
 }
 
-@media (prefers-color-scheme: light) {
-  :root:not(.dark-theme) .logo-wrapper .logo-icon {
-    filter: none;
-  }
-}
-
-:root.light-theme .logo-wrapper .logo-icon {
-  filter: none;
-}
-
-:root.light-theme .logo-wrapper:hover .logo-icon {
-  filter: none;
-  opacity: 1;
-}
-
 .logo svg {
   width: 20px;
   height: 20px;
@@ -194,21 +157,6 @@ nav {
 .nav-links a:hover {
   color: var(--text-primary);
   text-decoration: underline;
-}
-
-#theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  transition: color 0.3s ease;
-}
-
-#theme-toggle:hover {
-  color: var(--text-primary);
 }
 
 /* =========================================
@@ -500,16 +448,6 @@ h1 {
   color: var(--text-primary);
 }
 
-@media (prefers-color-scheme: light) {
-  :root:not(.dark-theme) .app-icon {
-    background: #e4e4e7;
-  }
-}
-
-:root.light-theme .app-icon {
-  background: #e4e4e7;
-}
-
 .app-icon img {
   width: 28px;
   height: 28px;
@@ -669,26 +607,6 @@ h1 {
   border-left: 3px solid var(--accent-red);
 }
 
-@media (prefers-color-scheme: light) {
-  :root:not(.dark-theme) .tldr-box {
-    background: rgba(0, 0, 0, 0.05);
-  }
-
-  :root:not(.dark-theme) .btn-outline img {
-    filter: brightness(0);
-    opacity: 0.7;
-  }
-}
-
-:root.light-theme .tldr-box {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-:root.light-theme .btn-outline img {
-  filter: brightness(0);
-  opacity: 0.7;
-}
-
 /* Content Sections - Less "Spacey" */
 .content section {
   margin-bottom: 32px;
@@ -826,16 +744,6 @@ h1 {
   filter: brightness(0) invert(1);
   opacity: 0.7;
   transition: opacity 0.3s ease;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not(.dark-theme) .footer-socials img {
-    filter: brightness(0);
-  }
-}
-
-:root.light-theme .footer-socials img {
-  filter: brightness(0);
 }
 
 .footer-socials svg {
