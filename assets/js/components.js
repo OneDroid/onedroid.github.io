@@ -56,10 +56,10 @@ function updateFaviconLink(rel, sizes, type, href) {
 function syncFavicon() {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
-    const manualLight = document.documentElement.classList.contains('light-theme');
-    const manualDark = document.documentElement.classList.contains('dark-theme');
-    const osDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : false;
-    const isDark = manualDark ? true : (manualLight ? false : osDark);
+    // Site is dark-only; the tab icon alone follows the browser/OS theme.
+    // Folder names describe the ICON color: favicon_dark/ = BLACK logo for
+    // light browser theme, favicon_light/ = WHITE logo for dark browser theme.
+    const isDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : true;
 
     const iconFolder = isDark ? 'favicon_light' : 'favicon_dark';
     const rootPath = getRootPath();
@@ -86,7 +86,6 @@ if (typeof window !== 'undefined' && window.matchMedia) {
         document.addEventListener('DOMContentLoaded', syncFavicon);
     }
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncFavicon);
-    new MutationObserver(syncFavicon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 }
 
 function debounce(fn, ms) {
