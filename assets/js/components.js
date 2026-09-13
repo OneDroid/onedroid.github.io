@@ -12,6 +12,91 @@ async function fetchContent(rootPath = './') {
     }
 }
 
+function getRootPath() {
+    const nav = document.querySelector('site-nav');
+    if (nav && nav.getAttribute('root')) {
+        return nav.getAttribute('root');
+    }
+    const script = document.querySelector('script[src*="components.js"]');
+    if (script) {
+        const src = script.getAttribute('src');
+        return src.replace(/assets\/js\/components\.js.*$/, '');
+    }
+    const css = document.querySelector('link[href*="global.css"]');
+    if (css) {
+        const href = css.getAttribute('href');
+        return href.replace(/assets\/css\/global\.css.*$/, '');
+    }
+    return './';
+}
+
+function updateFaviconLink(rel, sizes, type, href) {
+    let selector = `link[rel="${rel}"]`;
+    if (sizes) selector += `[sizes="${sizes}"]`;
+    if (type) selector += `[type="${type}"]`;
+
+    let link = document.querySelector(selector);
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = rel;
+        if (sizes) link.sizes = sizes;
+        if (type) link.type = type;
+        link.href = href;
+        document.head.appendChild(link);
+        return;
+    }
+
+    if (link.getAttribute('href') !== href) {
+        const newLink = link.cloneNode(true);
+        newLink.setAttribute('href', href);
+        link.parentNode.replaceChild(newLink, link);
+    }
+}
+
+function syncFavicon() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    const manualLight = document.documentElement.classList.contains('light-theme');
+    const manualDark = document.documentElement.classList.contains('dark-theme');
+    const osDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : false;
+    const isDark = manualDark ? true : (manualLight ? false : osDark);
+
+    const iconFolder = isDark ? 'favicon_light' : 'favicon_dark';
+    const rootPath = getRootPath();
+
+    updateFaviconLink('icon', '', 'image/svg+xml', `${rootPath}assets/icons/favicon.svg`);
+    updateFaviconLink('icon', '32x32', 'image/png', `${rootPath}assets/icons/${iconFolder}/favicon-32x32.png`);
+    updateFaviconLink('icon', '16x16', 'image/png', `${rootPath}assets/icons/${iconFolder}/favicon-16x16.png`);
+    updateFaviconLink('apple-touch-icon', '', '', `${rootPath}assets/icons/${iconFolder}/apple-touch-icon.png`);
+
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (manifestLink) {
+        manifestLink.setAttribute('href', `${rootPath}assets/icons/${iconFolder}/site.webmanifest`);
+    }
+
+    const shortcutLink = document.querySelector('link[rel="shortcut icon"]');
+    if (shortcutLink) {
+        shortcutLink.setAttribute('href', `${rootPath}assets/icons/${iconFolder}/favicon.ico`);
+    }
+}
+
+if (typeof window !== 'undefined' && window.matchMedia) {
+    syncFavicon();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', syncFavicon);
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncFavicon);
+    new MutationObserver(syncFavicon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+}
+
+function debounce(fn, ms) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), ms);
+    };
+}
+
 class SiteNav extends HTMLElement {
     async connectedCallback() {
         const rootPath = this.getAttribute('root') || './';
@@ -19,7 +104,15 @@ class SiteNav extends HTMLElement {
         if (data) {
             this.render(data.navigation, rootPath);
         }
-        window.addEventListener('hashchange', () => this.render(data.navigation, rootPath));
+        this._hashHandler = () => this.render(data.navigation, rootPath);
+        window.addEventListener('hashchange', this._hashHandler);
+    }
+
+    disconnectedCallback() {
+        if (this._hashHandler) {
+            window.removeEventListener('hashchange', this._hashHandler);
+            this._hashHandler = null;
+        }
     }
 
     render(navLinks, rootPath) {
@@ -34,15 +127,16 @@ class SiteNav extends HTMLElement {
         <header class="full-width-header">
             <div class="container">
                 <nav>
-                    <div class="logo-wrapper">
+                    <a href="${rootPath}index.html" class="logo-wrapper" aria-label="OneDroid home">
                         <img src="${rootPath}assets/icons/onedroid-icon.png" class="logo-icon" alt="OneDroid Icon">
-                        <div class="logo-text">
-                            <div class="logo-title">
-                                <a href="${rootPath}index.html">OneDroid</a>
-                            </div>
+                        <span class="logo-text">
+                            <span class="logo-title">OneDroid</span>
                             <span class="tagline">Simple, Secure & Open</span>
-                        </div>
-                    </div>
+                        </span>
+                    </a>
+                    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                        <span></span><span></span><span></span>
+                    </button>
                     <div class="nav-links">
                         ${navLinks.map(link => {
             const isActive = (link.label === 'HOME' && isHome && !isAppsActive) ||
@@ -55,6 +149,24 @@ class SiteNav extends HTMLElement {
             </div>
         </header>
         `;
+
+        const hamburger = this.querySelector('.hamburger');
+        const navLinksEl = this.querySelector('.nav-links');
+        if (hamburger && navLinksEl) {
+            hamburger.addEventListener('click', () => {
+                const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+                hamburger.setAttribute('aria-expanded', String(!expanded));
+                hamburger.classList.toggle('active');
+                navLinksEl.classList.toggle('open');
+            });
+            navLinksEl.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburger.classList.remove('active');
+                    navLinksEl.classList.remove('open');
+                });
+            });
+        }
     }
 }
 
@@ -68,18 +180,21 @@ class HeroSection extends HTMLElement {
         let heroData;
         if (page === 'home') heroData = data.home.hero;
         else if (page === 'about') heroData = { title: data.about.title, subtitle: data.about.description, links: data.about.links };
-        else if (page === 'jotter') heroData = { title: data.apps.jotter.title, subtitle: data.apps.jotter.tagline, icon: data.apps.jotter.icon };
 
         if (!heroData) return;
 
         this.className = 'hero';
-        this.style.position = 'relative';
-        this.style.display = 'block';
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isMobile = window.innerWidth < 768;
+        const showCanvas = page === 'home' && !prefersReducedMotion && !isMobile;
 
         this.innerHTML = `
-            <div class="hero-canvas-container" style="position: absolute; top: -50px; left: 0; height: calc(100% + 50px); z-index: -1; pointer-events: none; opacity: 0.8; mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent);">
+            ${showCanvas ? `
+            <div class="hero-canvas-container" aria-hidden="true" style="position: absolute; top: -50px; left: 0; height: calc(100% + 50px); z-index: -1; pointer-events: none; opacity: 0.8; mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent);">
                 <canvas id="data-pattern-canvas" style="width: 100%; height: 100%; display: block; mask-image: linear-gradient(to right, transparent 20%, black 50%, black 100%); -webkit-mask-image: linear-gradient(to right, transparent 20%, black 50%, black 100%);"></canvas>
             </div>
+            ` : ''}
             <div class="hero-content" style="position: relative; z-index: 1;">
                 ${heroData.icon ? `<img src="${rootPath}${heroData.icon}" alt="App Icon" class="app-icon">` : ''}
                 <h1 ${page === 'about' ? 'style="text-transform: none;"' : ''}>${heroData.title}</h1>
@@ -102,12 +217,42 @@ class HeroSection extends HTMLElement {
             </div>
         `;
 
-        if (page === 'home') {
-            this.initDataPattern(heroData.animation || 'matrix', heroData.animation_randomize, heroData.github_url);
+        this.style.position = 'relative';
+        this.style.display = 'block';
+
+        if (showCanvas) {
+            this.initDataPattern(heroData.animation || 'matrix', heroData.animation_randomize);
         }
     }
 
-    initDataPattern(configAnim, randomize, githubUrl) {
+    disconnectedCallback() {
+        this._cleanup();
+    }
+
+    _cleanup() {
+        if (this._animFrameId) {
+            cancelAnimationFrame(this._animFrameId);
+            this._animFrameId = null;
+        }
+        if (this._observer) {
+            this._observer.disconnect();
+            this._observer = null;
+        }
+        if (this._mouseMoveHandler) {
+            window.removeEventListener('mousemove', this._mouseMoveHandler);
+            this._mouseMoveHandler = null;
+        }
+        if (this._mouseLeaveHandler) {
+            window.removeEventListener('mouseleave', this._mouseLeaveHandler);
+            this._mouseLeaveHandler = null;
+        }
+        if (this._resizeHandler) {
+            window.removeEventListener('resize', this._resizeHandler);
+            this._resizeHandler = null;
+        }
+    }
+
+    initDataPattern(configAnim, randomize) {
         const canvas = this.querySelector('#data-pattern-canvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -115,9 +260,10 @@ class HeroSection extends HTMLElement {
 
         let width = 0;
         let height = 0;
+        const dpr = window.devicePixelRatio || 1;
 
         const updateSize = () => {
-            let container = this.closest('.container');
+            const container = this.closest('.container');
             if (container && canvasContainer) {
                 const parentStyles = window.getComputedStyle(container);
                 const pl = parseFloat(parentStyles.paddingLeft);
@@ -126,8 +272,9 @@ class HeroSection extends HTMLElement {
             }
             width = canvas.offsetWidth;
             height = canvas.offsetHeight;
-            canvas.width = width;
-            canvas.height = height;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
 
         updateSize();
@@ -138,16 +285,18 @@ class HeroSection extends HTMLElement {
             currentAnim = animTypes[Math.floor(Math.random() * animTypes.length)];
         }
 
-        let mouse = { x: -1000, y: -1000 };
-        window.addEventListener('mousemove', (e) => {
+        const mouse = { x: -1000, y: -1000 };
+        this._mouseMoveHandler = (e) => {
             const rect = canvas.getBoundingClientRect();
             mouse.x = e.clientX - rect.left;
             mouse.y = e.clientY - rect.top;
-        });
-        window.addEventListener('mouseleave', () => {
+        };
+        this._mouseLeaveHandler = () => {
             mouse.x = -1000;
             mouse.y = -1000;
-        });
+        };
+        window.addEventListener('mousemove', this._mouseMoveHandler);
+        window.addEventListener('mouseleave', this._mouseLeaveHandler);
 
         const animations = {
             matrix: () => {
@@ -166,7 +315,7 @@ class HeroSection extends HTMLElement {
                     }
                     update() {
                         this.y += this.speed;
-                        let headY = this.y;
+                        const headY = this.y;
                         if (headY - this.length * fontSize > height + 50) {
                             this.reset();
                             this.y = -200;
@@ -192,9 +341,9 @@ class HeroSection extends HTMLElement {
                         ctx.textAlign = 'center'; ctx.textBaseline = 'top';
                         ctx.font = `${fontSize}px "Roboto Mono", monospace`;
                         for (let i = 0; i < this.length; i++) {
-                            let sym = this.symbols[i];
+                            const sym = this.symbols[i];
                             if (sym.y > -fontSize && sym.y < height) {
-                                let opacity = 1 - (i / this.length);
+                                const opacity = 1 - (i / this.length);
                                 ctx.fillStyle = i === 0 ? `rgba(200, 255, 200, ${opacity + 0.3})` : `rgba(0, 247, 0, ${opacity * 0.8})`;
                                 ctx.fillText(sym.char, this.x + sym.xOffset, sym.y);
                             }
@@ -213,7 +362,7 @@ class HeroSection extends HTMLElement {
                     setup, resize: setup,
                     draw: () => {
                         ctx.clearRect(0, 0, width, height);
-                        for (let stream of streams) { stream.update(); stream.draw(); }
+                        for (const stream of streams) { stream.update(); stream.draw(); }
                     }
                 };
             },
@@ -228,7 +377,7 @@ class HeroSection extends HTMLElement {
                     draw: () => {
                         ctx.clearRect(0, 0, width, height);
                         for (let i = 0; i < parts.length; i++) {
-                            let p = parts[i];
+                            const p = parts[i];
                             p.x += p.vx; p.y += p.vy;
                             if (p.x < 0) p.x = width; if (p.x > width) p.x = 0;
                             if (p.y < 0) p.y = height; if (p.y > height) p.y = 0;
@@ -237,7 +386,6 @@ class HeroSection extends HTMLElement {
                             const distM = Math.hypot(dx, dy);
                             let targetX = 0, targetY = 0;
 
-                            // Gravitate towards the cursor
                             if (distM < 180) {
                                 const f = (180 - distM) / 180;
                                 targetX = -(dx) * f * 0.6;
@@ -261,7 +409,7 @@ class HeroSection extends HTMLElement {
                             }
 
                             for (let j = i + 1; j < parts.length; j++) {
-                                let p2 = parts[j];
+                                const p2 = parts[j];
                                 const dist = Math.hypot((p.x + p.ox) - (p2.x + p2.ox), (p.y + p.oy) - (p2.y + p2.oy));
                                 if (dist < 85 && (p.x > width * 0.1 || p2.x > width * 0.1)) {
                                     ctx.beginPath();
@@ -307,7 +455,7 @@ class HeroSection extends HTMLElement {
                     setup, resize: setup,
                     draw: () => {
                         ctx.clearRect(0, 0, width, height);
-                        for (let s of sparks) {
+                        for (const s of sparks) {
                             s.trail.unshift({ x: s.x, y: s.y });
                             if (s.trail.length > s.length) s.trail.pop();
 
@@ -361,37 +509,44 @@ class HeroSection extends HTMLElement {
                 ];
 
                 try {
-                    let org = "onedroid";
-                    fetch(`https://api.github.com/users/${org}/repos`)
-                        .then(res => res.json())
-                        .then(repos => {
-                            if (Array.isArray(repos)) {
-                                let newLogs = [];
-                                repos.forEach(repo => {
-                                    if (repo.name) {
-                                        newLogs.push(`I/Git(Repo): Loaded ${repo.name} [${repo.language || 'Code'}]`);
-                                        newLogs.push(`V/System(${repo.name}): Validating offline cache...`);
-                                        newLogs.push(`I/Build(${repo.name}): Starting gradle daemon...`);
-                                        newLogs.push(`I/OneDroid(${repo.name}): Syncing modular dependencies...`);
-                                        newLogs.push(`E/Lint(${repo.name}): 0 errors, 0 warnings found`);
-
-                                        if (repo.stargazers_count > 0) newLogs.push(`D/Git(Star): ${repo.name} has ${repo.stargazers_count} stars`);
-                                        if (repo.open_issues_count > 0) newLogs.push(`W/Git(Issue): ${repo.name} has ${repo.open_issues_count} open issues`);
-                                        if (repo.forks_count > 0) newLogs.push(`I/Git(Fork): ${repo.name} forked ${repo.forks_count} times`);
-                                        if (repo.pushed_at) {
-                                            const pushDate = new Date(repo.pushed_at).toISOString().split('T')[0];
-                                            newLogs.push(`V/Git(Push): ${repo.name} last push ${pushDate}`);
-                                        }
-                                        if (repo.description) {
-                                            newLogs.push(`D/Git(Desc): ${repo.description.substring(0, 45)}...`);
-                                        }
-                                    }
-                                });
-                                // Mix the generated ones with the original Android variants
-                                if (newLogs.length > 0) logs = [...logs, ...newLogs];
-                            }
-                        }).catch(() => { });
+                    const cached = sessionStorage.getItem('onedroid_repos');
+                    if (cached) {
+                        const repos = JSON.parse(cached);
+                        logs = [...logs, ...buildRepoLogs(repos)];
+                    } else {
+                        fetch('https://api.github.com/users/onedroid/repos')
+                            .then(res => res.json())
+                            .then(repos => {
+                                if (Array.isArray(repos)) {
+                                    try { sessionStorage.setItem('onedroid_repos', JSON.stringify(repos)); } catch (e) { }
+                                    logs = [...logs, ...buildRepoLogs(repos)];
+                                }
+                            }).catch(() => { });
+                    }
                 } catch (e) { }
+
+                function buildRepoLogs(repos) {
+                    const newLogs = [];
+                    repos.forEach(repo => {
+                        if (!repo.name) return;
+                        newLogs.push(`I/Git(Repo): Loaded ${repo.name} [${repo.language || 'Code'}]`);
+                        newLogs.push(`V/System(${repo.name}): Validating offline cache...`);
+                        newLogs.push(`I/Build(${repo.name}): Starting gradle daemon...`);
+                        newLogs.push(`I/OneDroid(${repo.name}): Syncing modular dependencies...`);
+                        newLogs.push(`E/Lint(${repo.name}): 0 errors, 0 warnings found`);
+                        if (repo.stargazers_count > 0) newLogs.push(`D/Git(Star): ${repo.name} has ${repo.stargazers_count} stars`);
+                        if (repo.open_issues_count > 0) newLogs.push(`W/Git(Issue): ${repo.name} has ${repo.open_issues_count} open issues`);
+                        if (repo.forks_count > 0) newLogs.push(`I/Git(Fork): ${repo.name} forked ${repo.forks_count} times`);
+                        if (repo.pushed_at) {
+                            const pushDate = new Date(repo.pushed_at).toISOString().split('T')[0];
+                            newLogs.push(`V/Git(Push): ${repo.name} last push ${pushDate}`);
+                        }
+                        if (repo.description) {
+                            newLogs.push(`D/Git(Desc): ${repo.description.substring(0, 45)}...`);
+                        }
+                    });
+                    return newLogs;
+                }
 
                 let activeLogs = [];
                 const setup = () => { activeLogs = []; };
@@ -400,7 +555,6 @@ class HeroSection extends HTMLElement {
                     draw: () => {
                         ctx.clearRect(0, 0, width, height);
 
-                        // Increased density limits while retaining the anti-overlap physics!
                         if (Math.random() < 0.08 && activeLogs.length < 35) {
                             const newX = Math.random() * (width * 0.5) + width * 0.3;
                             const isOverlapping = activeLogs.some(log =>
@@ -422,13 +576,12 @@ class HeroSection extends HTMLElement {
                         ctx.font = '12px "Roboto Mono", monospace';
                         ctx.textAlign = 'left';
 
-                        let survivingLogs = [];
+                        const survivingLogs = [];
                         for (let i = 0; i < activeLogs.length; i++) {
-                            let log = activeLogs[i];
+                            const log = activeLogs[i];
                             const dx = (log.x + log.xOffset) - mouse.x, dy = log.y - mouse.y;
                             const distM = Math.hypot(dx, dy);
 
-                            // Smooth repulsion logic (lerp)
                             let targetXOffset = 0;
                             if (distM < 120) {
                                 const f = (120 - distM) / 120;
@@ -464,17 +617,26 @@ class HeroSection extends HTMLElement {
         const currentEngine = animations[currentAnim]();
         currentEngine.setup();
 
-        let animFrameId;
+        let isVisible = true;
+
+        this._observer = new IntersectionObserver((entries) => {
+            isVisible = entries[0].isIntersecting;
+        }, { threshold: 0 });
+        this._observer.observe(this);
+
         const render = () => {
-            currentEngine.draw();
-            animFrameId = requestAnimationFrame(render);
+            if (isVisible) {
+                currentEngine.draw();
+            }
+            this._animFrameId = requestAnimationFrame(render);
         };
         render();
 
-        window.addEventListener('resize', () => {
+        this._resizeHandler = debounce(() => {
             updateSize();
             if (currentEngine.resize) currentEngine.resize();
-        });
+        }, 150);
+        window.addEventListener('resize', this._resizeHandler);
     }
 }
 
@@ -482,7 +644,7 @@ class ProjectCarousel extends HTMLElement {
     async connectedCallback() {
         const rootPath = this.getAttribute('root') || './';
         const data = await fetchContent(rootPath);
-        if (!data || !data.home.projects) return;
+        if (!data || !data.home.projects || !data.home.projects.length) return;
 
         this.innerHTML = `
             <div class="carousel-wrapper">
@@ -520,6 +682,13 @@ class ProjectCarousel extends HTMLElement {
         this.initCarousel();
     }
 
+    disconnectedCallback() {
+        if (this._autoScroll) {
+            clearInterval(this._autoScroll);
+            this._autoScroll = null;
+        }
+    }
+
     initCarousel() {
         const carousel = this.querySelector('#projectCarousel');
         const prevBtn = this.querySelector('#prevBtn');
@@ -538,9 +707,9 @@ class ProjectCarousel extends HTMLElement {
 
         prevBtn.addEventListener('click', scrollPrev);
         nextBtn.addEventListener('click', scrollNext);
-        let autoScroll = setInterval(scrollNext, 4000);
-        carousel.addEventListener('mouseenter', () => clearInterval(autoScroll));
-        carousel.addEventListener('mouseleave', () => autoScroll = setInterval(scrollNext, 4000));
+        this._autoScroll = setInterval(scrollNext, 4000);
+        carousel.addEventListener('mouseenter', () => clearInterval(this._autoScroll));
+        carousel.addEventListener('mouseleave', () => { this._autoScroll = setInterval(scrollNext, 4000); });
     }
 }
 
@@ -561,146 +730,64 @@ class AboutContent extends HTMLElement {
     }
 }
 
-class JotterSpecs extends HTMLElement {
-    async connectedCallback() {
-        const rootPath = this.getAttribute('root') || './';
-        const data = await fetchContent(rootPath);
-        if (!data || !data.apps.jotter.specs) return;
-        const specs = data.apps.jotter.specs;
-
-        this.innerHTML = `
-            <div class="section-label" id="features">(01) FEATURES</div>
-            <div class="info-grid jotter-specs">
-                <div class="glass-panel">
-                    <p class="bio-text">${specs.bio}</p>
-                    <p class="bio-sub">${specs.bio_sub}</p>
-                </div>
-                <div class="glass-panel" style="padding: 30px">
-                    <div class="stack-list">
-                        <div class="stack-item"><span>Download</span><span>Source</span></div>
-                        ${specs.download_links.map(l => `
-                            <div class="stack-item"><span>${l.label}</span><span><a href="${l.url}" target="_blank">${l.value}</a></span></div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-}
-
-class ScreenshotCarousel extends HTMLElement {
-    async connectedCallback() {
-        const rootPath = this.getAttribute('root') || './';
-        const data = await fetchContent(rootPath);
-        if (!data || !data.apps.jotter.screenshots) return;
-
-        this.innerHTML = `
-            <div class="section-label" id="screenshots">(02) SCREENSHOTS</div>
-            <section class="screenshots-section">
-                <div class="screenshot-carousel-wrapper">
-                    <div class="screenshot-nav">
-                        <button class="nav-btn" id="shotPrev" aria-label="Previous">
-                            <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
-                        </button>
-                        <button class="nav-btn" id="shotNext" aria-label="Next">
-                            <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
-                        </button>
-                    </div>
-                    <div class="screenshot-carousel" id="shotCarousel">
-                        ${data.apps.jotter.screenshots.map(s => `
-                            <div class="screenshot-item">
-                                <img src="${s.src}" alt="${s.alt}">
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </section>
-        `;
-        this.initLightbox();
-        this.initCarousel();
-    }
-
-    initCarousel() {
-        const carousel = this.querySelector('#shotCarousel');
-        const prevBtn = this.querySelector('#shotPrev');
-        const nextBtn = this.querySelector('#shotNext');
-        if (!carousel || !prevBtn || !nextBtn) return;
-        const scrollAmount = 300;
-        prevBtn.onclick = () => carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-        nextBtn.onclick = () => carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-
-    initLightbox() {
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightboxImg');
-        if (!lightbox || !lightboxImg) return;
-        this.querySelectorAll('.screenshot-item img').forEach(img => {
-            img.onclick = () => {
-                lightboxImg.src = img.src;
-                lightbox.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            };
-        });
-        lightbox.onclick = () => {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        };
-    }
-}
-
-class FeatureGrid extends HTMLElement {
-    async connectedCallback() {
-        const rootPath = this.getAttribute('root') || './';
-        const data = await fetchContent(rootPath);
-        if (!data || !data.apps.jotter.features) return;
-
-        this.innerHTML = `
-            <div class="section-label" id="specs">(03) More Relevent</div>
-            <div class="bento-grid">
-                ${data.apps.jotter.features.map(f => `
-                    <article class="widget">
-                        <div>
-                            <div class="widget-header">
-                                <div class="app-icon">
-                                    <img src="${rootPath}${f.icon}" alt="${f.title} Icon">
-                                </div>
-                            </div>
-                            <h3>${f.title}</h3>
-                            <p>${f.description}</p>
-                        </div>
-                        <div class="feature-pills">
-                            ${f.tags.map(t => `<span class="pill">${t}</span>`).join('')}
-                        </div>
-                    </article>
-                `).join('')}
-            </div>
-        `;
-    }
-}
-
 class SiteFooter extends HTMLElement {
-    connectedCallback() {
-        const rootPath = this.getAttribute('root') || './';
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || getRootPath() || './';
+        const data = await fetchContent(rootPath).catch(() => null);
+        const githubUrl = (data && data.home && data.home.hero && data.home.hero.github_url) || 'https://www.github.com/onedroid';
+        const linkedinUrl = (data && data.about && data.about.links)
+            ? (data.about.links.find(l => /linkedin/i.test(l.label)) || {}).url || 'https://www.linkedin.com/company/onedroid'
+            : 'https://www.linkedin.com/company/onedroid';
+
         this.innerHTML = `
         <footer class="full-width-footer">
             <div class="container">
-                <footer>
-                    <p class="copyright">OneDroid &copy; ${new Date().getFullYear()} 
-                       <a href="${rootPath}pages/admin.html" style="opacity: 0.1; margin-left: 10px;">.</a>
-                    </p>
-                </footer>
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <a href="${rootPath}index.html" class="footer-logo" aria-label="OneDroid home">
+                            <img src="${rootPath}assets/icons/onedroid-icon.png" alt="OneDroid logo">
+                            <span>OneDroid</span>
+                        </a>
+                        <p class="footer-desc">Simple, Secure &amp; Open. Open-source Android apps built with integrity. No ads, no tracking, free forever.</p>
+                        <div class="footer-socials">
+                            <a href="${githubUrl}" target="_blank" rel="noopener" aria-label="GitHub">
+                                <img src="${rootPath}assets/icons/github.svg" alt="GitHub">
+                            </a>
+                            <a href="${linkedinUrl}" target="_blank" rel="noopener" aria-label="LinkedIn">
+                                <img src="${rootPath}assets/icons/linkedin-icon.svg" alt="LinkedIn">
+                            </a>
+                            <a href="https://www.youtube.com/@one-droid" target="_blank" rel="noopener" aria-label="YouTube">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></svg>
+                            </a>
+                        </div>
+                    </div>
+                    <nav class="footer-links" aria-label="Footer">
+                        <div class="footer-col">
+                            <h4>Explore</h4>
+                            <a href="${rootPath}index.html">Home</a>
+                            <a href="${rootPath}index.html#apps">Apps</a>
+                            <a href="${rootPath}pages/about.html">About</a>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Resources</h4>
+                            <a href="${githubUrl}" target="_blank" rel="noopener">GitHub</a>
+                            <a href="${linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>
+                            <a href="https://www.youtube.com/@one-droid" target="_blank" rel="noopener">YouTube</a>
+                        </div>
+                    </nav>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; ${new Date().getFullYear()} One Droid. All rights reserved.</p>
+                    <p>One Droid &ndash; Mobile App Development Studio</p>
+                </div>
             </div>
         </footer>
         `;
     }
 }
 
-// Register Components
 customElements.define('site-nav', SiteNav);
 customElements.define('hero-section', HeroSection);
 customElements.define('project-carousel', ProjectCarousel);
 customElements.define('about-content', AboutContent);
-customElements.define('jotter-specs', JotterSpecs);
-customElements.define('screenshot-carousel', ScreenshotCarousel);
-customElements.define('feature-grid', FeatureGrid);
 customElements.define('site-footer', SiteFooter);

@@ -5,10 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Simple. Secure. Open. Android apps built with love.">
+    <meta property="og:title" content="OneDroid">
+    <meta property="og:description" content="Simple. Secure. Open. Open-source Android apps built with integrity.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onedroid.github.io/">
+    <meta property="og:image" content="https://onedroid.github.io/assets/icons/favicon_dark/android-chrome-512x512.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="OneDroid">
+    <meta name="twitter:description" content="Simple. Secure. Open. Open-source Android apps built with integrity.">
+    <meta name="twitter:image" content="https://onedroid.github.io/assets/icons/favicon_dark/android-chrome-512x512.png">
     <title>OneDroid</title>
 
     <link rel="stylesheet" href="./assets/css/global.css">
-    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.ico">
+    <!-- Favicon: Adaptive SVG with prefers-color-scheme support + dynamic PNG sync via components.js -->
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon_light/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon_light/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="./assets/icons/favicon_light/apple-touch-icon.png">
+    <link rel="manifest" href="./assets/icons/favicon_light/site.webmanifest">
+    <link rel="shortcut icon" href="./assets/icons/favicon_light/favicon.ico">
+    <meta name="theme-color" content="#010409" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Mono:wght@400;500;700&display=swap"
@@ -24,14 +41,17 @@
 
         <div class="section-label" id="apps">PROJECTS</div>
 
-        <project-carousel root="./"></project-carousel>
+        <div class="glass-panel coming-soon">
+            <p class="coming-soon-title">New apps are on the way</p>
+            <p class="coming-soon-sub">We're working on something great. Check back soon.</p>
+        </div>
     </div>
 
     <site-footer></site-footer>
 
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
         data-id="tawhidmonowar" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF"
-        data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+        data-position="Right" data-x_margin="18" data-y_margin="18" async></script>
 </body>
 
 </html>
