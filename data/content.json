@@ -5,8 +5,12 @@
       "url": "index.html"
     },
     {
-      "label": "APPS",
+      "label": "PRODUCT",
       "url": "index.html#apps"
+    },
+    {
+      "label": "SERVICES",
+      "url": "#services"
     },
     {
       "label": "ABOUT",

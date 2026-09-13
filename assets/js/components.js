@@ -140,7 +140,7 @@ class SiteNav extends HTMLElement {
                     <div class="nav-links">
                         ${navLinks.map(link => {
             const isActive = (link.label === 'HOME' && isHome && !isAppsActive) ||
-                (link.label === 'APPS' && isAppsActive) ||
+                (link.label === 'PRODUCT' && isAppsActive) ||
                 (link.label === 'ABOUT' && isAbout);
             return `<a href="${rootPath}${link.url}" class="${isActive ? 'green' : ''}">${link.label}</a>`;
         }).join('')}
@@ -765,7 +765,7 @@ class SiteFooter extends HTMLElement {
                         <div class="footer-col">
                             <h4>Explore</h4>
                             <a href="${rootPath}index.html">Home</a>
-                            <a href="${rootPath}index.html#apps">Apps</a>
+                            <a href="${rootPath}index.html#apps">Product</a>
                             <a href="${rootPath}pages/about.html">About</a>
                         </div>
                         <div class="footer-col">
