@@ -778,16 +778,6 @@ class SiteFooter extends HTMLElement {
                             </a>
                         </div>
                     </div>
-                    <div class="footer-side">
-                    <div class="footer-newsletter">
-                        <h4>Newsletter</h4>
-                        <p>New apps and release notes, straight to your inbox. No spam, ever.</p>
-                        <form class="newsletter-form" novalidate>
-                            <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" required>
-                            <button type="submit">Subscribe</button>
-                        </form>
-                        <p class="newsletter-note" hidden>Thanks for subscribing!</p>
-                    </div>
                     <nav class="footer-links" aria-label="Footer">
                         <div class="footer-col">
                             <h4>Explore</h4>
@@ -803,12 +793,11 @@ class SiteFooter extends HTMLElement {
                         </div>
                         <div class="footer-col">
                             <h4>Company</h4>
+                            <a href="#">Blog</a>
                             <a href="#">Careers</a>
                             <a href="#">Privacy</a>
-                            <a href="#">Blog</a>
                         </div>
                     </nav>
-                    </div>
                 </div>
                 <div class="footer-bottom">
                     <p>&copy; ${new Date().getFullYear()} One Droid. All rights reserved.</p>
@@ -817,20 +806,6 @@ class SiteFooter extends HTMLElement {
             </div>
         </footer>
         `;
-        const form = this.querySelector('.newsletter-form');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const input = form.querySelector('input[type="email"]');
-                if (input && !input.checkValidity()) {
-                    form.reportValidity();
-                    return;
-                }
-                const note = this.querySelector('.newsletter-note');
-                form.style.display = 'none';
-                if (note) note.hidden = false;
-            });
-        }
     }
 }
 
