@@ -4,19 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Simple. Secure. Open. Android apps built with love.">
-    <meta property="og:title" content="OneDroid">
-    <meta property="og:description" content="Simple. Secure. Open. Open-source Android apps built with integrity.">
+    <meta name="description" content="OneDroid is an independent Android app studio. Open-source projects alongside free, ad-supported apps with optional in-app purchases.">
+    <meta property="og:title" content="OneDroid | Android App Studio">
+    <meta property="og:description" content="OneDroid is an independent Android app studio. Open-source projects alongside free, ad-supported apps with optional in-app purchases.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://onedroid.github.io/">
     <meta property="og:image" content="https://onedroid.github.io/assets/icons/favicon_dark/android-chrome-512x512.png">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="OneDroid">
-    <meta name="twitter:description" content="Simple. Secure. Open. Open-source Android apps built with integrity.">
+    <meta name="twitter:title" content="OneDroid | Android App Studio">
+    <meta name="twitter:description" content="OneDroid is an independent Android app studio. Open-source projects alongside free, ad-supported apps with optional in-app purchases.">
     <meta name="twitter:image" content="https://onedroid.github.io/assets/icons/favicon_dark/android-chrome-512x512.png">
-    <title>OneDroid</title>
+    <title>OneDroid | Android App Studio</title>
 
-    <link rel="stylesheet" href="./assets/css/global.css?v=3">
+    <link rel="stylesheet" href="./assets/css/global.css?v=4">
     <!-- Favicon: Adaptive SVG with prefers-color-scheme support + dynamic PNG sync via components.js -->
     <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon_light/favicon-32x32.png">
@@ -30,7 +30,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
-    <script src="./assets/js/components.js?v=3" defer></script>
+    <script src="./assets/js/components.js?v=4" defer></script>
 </head>
 
 <body>
@@ -44,12 +44,19 @@
     <div class="container main-content">
         <hero-section root="./" page="home"></hero-section>
 
-        <div class="section-label" id="apps">PROJECTS</div>
+        <div class="section-label" id="apps">Our Apps</div>
 
-        <div class="glass-panel coming-soon">
-            <p class="coming-soon-title">New apps are on the way</p>
-            <p class="coming-soon-sub">We're working on something great. Check back soon.</p>
-        </div>
+        <project-carousel root="./">
+            <div class="glass-panel coming-soon">
+                <p class="coming-soon-title">New apps are on the way</p>
+                <p class="coming-soon-sub">We're preparing our first releases for Google Play, plus open-source projects on GitHub. Check back soon.</p>
+            </div>
+        </project-carousel>
+
+        <div class="section-label" id="approach">How We Build</div>
+        <p class="section-intro">Not every app follows the same model. Here's how OneDroid apps are offered.</p>
+
+        <approach-grid root="./"></approach-grid>
     </div>
 
     <site-footer></site-footer>
