@@ -1,64 +1,87 @@
 {
+  "brand": {
+    "name": "OneDroid",
+    "tagline": "Android App Studio",
+    "playstore_url": "",
+    "socials": [
+      { "id": "github", "label": "GitHub", "url": "https://www.github.com/onedroid" },
+      { "id": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/company/onedroid" },
+      { "id": "youtube", "label": "YouTube", "url": "https://www.youtube.com/@one-droid" },
+      { "id": "huggingface", "label": "Hugging Face", "url": "https://huggingface.co/one-droid" }
+    ]
+  },
   "navigation": [
-    {
-      "label": "HOME",
-      "url": "index.html"
-    },
-    {
-      "label": "PRODUCT",
-      "url": "index.html#apps"
-    },
-    {
-      "label": "RESEARCH",
-      "url": "#research"
-    },
-    {
-      "label": "ABOUT",
-      "url": "pages/about.html"
-    }
+    { "id": "home", "label": "Home", "url": "index.html" },
+    { "id": "apps", "label": "Apps", "url": "index.html#apps" },
+    { "id": "approach", "label": "How We Build", "url": "index.html#approach" },
+    { "id": "about", "label": "About", "url": "pages/about.html" }
   ],
   "home": {
     "hero": {
-      "title": "Simple, Secure & Open",
-      "subtitle": "Open-source apps engineered with integrity. No ads, no tracking, and <span class=\"green\">open-source</span> forever.",
+      "eyebrow": "Independent Android App Studio",
+      "title": "Simple. Secure. Built Right.",
+      "subtitle": "OneDroid crafts Android apps people genuinely enjoy using. Some are <span class=\"green\">open source</span>, others are free with ads and optional in-app purchases that keep development going.",
       "github_url": "https://www.github.com/onedroid",
-      "show_playstore": false,
       "animation": "logcat",
       "animation_randomize": false
     },
+    "approach": [
+      {
+        "icon": "assets/icons/code-xml.svg",
+        "title": "Open Source",
+        "text": "Selected apps and libraries are built in the open on GitHub. Read the code, report issues, and contribute.",
+        "tag": "Source on GitHub"
+      },
+      {
+        "icon": "assets/icons/smartphone.svg",
+        "title": "Free with Ads",
+        "text": "Many of our apps are free to download and supported by ads, kept unobtrusive so they stay out of your way.",
+        "tag": "Free to download"
+      },
+      {
+        "icon": "assets/icons/package-open.svg",
+        "title": "In-App Purchases",
+        "text": "Optional upgrades unlock premium features or remove ads. Always clearly priced, never required to get started.",
+        "tag": "Optional upgrades"
+      },
+      {
+        "icon": "assets/icons/shield-check.svg",
+        "title": "Privacy First",
+        "text": "Whatever the model, each app collects only what it needs and explains it plainly in its privacy policy.",
+        "tag": "Every app"
+      }
+    ],
     "projects": []
   },
   "about": {
-    "title": "ABOUT @OneDroid",
-    "description": "OneDroid is an <span class=\"green\">open-source</span> initiative focused on building simple, secure, and privacy-friendly softwares.",
-    "links": [
-      {
-        "label": "GitHub",
-        "url": "https://www.github.com/onedroid",
-        "icon": "assets/icons/github.svg"
-      },
-      {
-        "label": "LinkedIn",
-        "url": "https://www.linkedin.com/company/onedroid",
-        "icon": "assets/icons/linkedin-icon.svg"
-      }
-    ],
+    "title": "About OneDroid",
+    "description": "OneDroid is an independent mobile app studio building simple, secure, and genuinely useful Android apps. Some are <span class=\"green\">open source</span>, some are free with ads and in-app purchases.",
     "sections": [
       {
-        "title": "(01) WE VALUE",
+        "title": "(01) Who We Are",
         "content": [
-          "OneDroid is an open-source platform dedicated to building modern Android applications with a strong focus on transparency, privacy, and usability. We develop apps in the open so anyone can review the source code, understand how things work, and contribute to making them better. Openness and collaboration are fundamental to how we build software.",
-          "Privacy is another fundamental principle behind OneDroid. Our apps are designed to respect users by avoiding unnecessary tracking, intrusive ads, and hidden data collection. Instead, we focus on creating reliable tools that work exactly as intended while protecting users’ digital freedom.",
-          "OneDroid exists to deliver practical solutions that solve everyday problems without compromising trust or user experience. By keeping our projects open, free, and community-focused, we aim to build a sustainable ecosystem of Android apps that anyone can use, improve, and rely on."
+          "OneDroid is a startup focused on modern Android development. We design, build, and ship apps that solve everyday problems with clean interfaces, solid performance, and careful attention to detail."
         ]
       },
       {
-        "title": "(02) Maintainer",
+        "title": "(02) How We Build",
         "content": [
-          "OneDroid is initiated and actively maintained by <span class=\"green\">Tawhid Monowar</span>, who leads the engineering efforts and long-term development strategy of the organization. He designs, builds, and maintains the core applications while ensuring the projects remain open source, secure, and aligned with the mission."
+          "Not every app follows the same model. Some of our projects are fully open source: their code lives on GitHub, where anyone can review it, learn from it, or contribute. Others are free to download and supported by ads, with optional in-app purchases for premium features or an ad-free experience.",
+          "This mix lets us share what we can with the community while earning the revenue that keeps a small studio sustainable, so our apps stay maintained, updated, and supported for the long term."
+        ]
+      },
+      {
+        "title": "(03) Our Promise",
+        "content": [
+          "Whatever the business model, the standard stays the same: apps that respect your time and your device. Ads are kept unobtrusive, purchases are optional and clearly priced, and each app collects only what it needs, explained plainly in its privacy policy."
+        ]
+      },
+      {
+        "title": "(04) Founder",
+        "content": [
+          "OneDroid was founded and is led by <span class=\"green\">Tawhid Monowar</span>, who drives the product vision and engineering. He designs, builds, and maintains the apps, from the first line of code to every release on Google Play."
         ]
       }
     ]
-  },
-  "apps": {}
+  }
 }

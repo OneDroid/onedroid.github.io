@@ -111,75 +111,197 @@ function debounce(fn, ms) {
     };
 }
 
+// Shared icons -------------------------------------------------------------
+const ICON_ARROW = '<svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>';
+const ICON_UP = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>';
+const SOCIAL_SVGS = {
+    youtube: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></svg>',
+    huggingface: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.025 1.13c-5.77 0-10.449 4.647-10.449 10.378 0 1.112.178 2.181.503 3.185.064-.222.203-.444.416-.577a.96.96 0 0 1 .524-.15c.293 0 .584.124.84.284.278.173.48.408.71.694.226.282.458.611.684.951v-.014c.017-.324.106-.622.264-.874s.403-.487.762-.543c.3-.047.596.06.787.203s.31.313.4.467c.15.257.212.468.233.542.01.026.653 1.552 1.657 2.54.616.605 1.01 1.223 1.082 1.912.055.537-.096 1.059-.38 1.572.637.121 1.294.187 1.967.187.657 0 1.298-.063 1.921-.178-.287-.517-.44-1.041-.384-1.581.07-.69.465-1.307 1.081-1.913 1.004-.987 1.647-2.513 1.657-2.539.021-.074.083-.285.233-.542.09-.154.208-.323.4-.467a1.08 1.08 0 0 1 .787-.203c.359.056.604.29.762.543s.247.55.265.874v.015c.225-.34.457-.67.683-.952.23-.286.432-.52.71-.694.257-.16.547-.284.84-.285a.97.97 0 0 1 .524.151c.228.143.373.388.43.625l.006.04a10.3 10.3 0 0 0 .534-3.273c0-5.731-4.678-10.378-10.449-10.378M8.327 6.583a1.5 1.5 0 0 1 .713.174 1.487 1.487 0 0 1 .617 2.013c-.183.343-.762-.214-1.102-.094-.38.134-.532.914-.917.71a1.487 1.487 0 0 1 .69-2.803m7.486 0a1.487 1.487 0 0 1 .689 2.803c-.385.204-.536-.576-.916-.71-.34-.12-.92.437-1.103.094a1.487 1.487 0 0 1 .617-2.013 1.5 1.5 0 0 1 .713-.174m-10.68 1.55a.96.96 0 1 1 0 1.921.96.96 0 0 1 0-1.92m13.838 0a.96.96 0 1 1 0 1.92.96.96 0 0 1 0-1.92M8.489 11.458c.588.01 1.965 1.157 3.572 1.164 1.607-.007 2.984-1.155 3.572-1.164.196-.003.305.12.305.454 0 .886-.424 2.328-1.563 3.202-.22-.756-1.396-1.366-1.63-1.32q-.011.001-.02.006l-.044.026-.01.008-.03.024q-.018.017-.035.036l-.032.04a1 1 0 0 0-.058.09l-.014.025q-.049.088-.11.19a1 1 0 0 1-.083.116 1.2 1.2 0 0 1-.173.18q-.035.029-.075.058a1.3 1.3 0 0 1-.251-.243 1 1 0 0 1-.076-.107c-.124-.193-.177-.363-.337-.444-.034-.016-.104-.008-.2.022q-.094.03-.216.087-.06.028-.125.063l-.13.074q-.067.04-.136.086a3 3 0 0 0-.135.096 3 3 0 0 0-.26.219 2 2 0 0 0-.12.121 2 2 0 0 0-.106.128l-.002.002a2 2 0 0 0-.09.132l-.001.001a1.2 1.2 0 0 0-.105.212q-.013.036-.024.073c-1.139-.875-1.563-2.317-1.563-3.203 0-.334.109-.457.305-.454m.836 10.354c.824-1.19.766-2.082-.365-3.194-1.13-1.112-1.789-2.738-1.789-2.738s-.246-.945-.806-.858-.97 1.499.202 2.362c1.173.864-.233 1.45-.685.64-.45-.812-1.683-2.896-2.322-3.295s-1.089-.175-.938.647 2.822 2.813 2.562 3.244-1.176-.506-1.176-.506-2.866-2.567-3.49-1.898.473 1.23 2.037 2.16c1.564.932 1.686 1.178 1.464 1.53s-3.675-2.511-4-1.297c-.323 1.214 3.524 1.567 3.287 2.405-.238.839-2.71-1.587-3.216-.642-.506.946 3.49 2.056 3.522 2.064 1.29.33 4.568 1.028 5.713-.624m5.349 0c-.824-1.19-.766-2.082.365-3.194 1.13-1.112 1.789-2.738 1.789-2.738s.246-.945.806-.858.97 1.499-.202 2.362c-1.173.864.233 1.45.685.64.451-.812 1.683-2.896 2.322-3.295s1.089-.175.938.647-2.822 2.813-2.562 3.244 1.176-.506 1.176-.506 2.866-2.567 3.49-1.898-.473 1.23-2.037 2.16c-1.564.932-1.686 1.178-1.464 1.53s3.675-2.511 4-1.297c.323 1.214-3.524 1.567-3.287 2.405.238.839 2.71-1.587 3.216-.642.506.946-3.49 2.056-3.522 2.064-1.29.33-4.568 1.028-5.713-.624"/></svg>'
+};
+
+function socialIcon(id, rootPath) {
+    if (id === 'github') return `<img src="${rootPath}assets/icons/github.svg" alt="" aria-hidden="true">`;
+    if (id === 'linkedin') return `<img src="${rootPath}assets/icons/linkedin-icon.svg" alt="" aria-hidden="true">`;
+    return SOCIAL_SVGS[id] || '';
+}
+
+function getSocials(data) {
+    return (data && data.brand && Array.isArray(data.brand.socials)) ? data.brand.socials : [
+        { id: 'github', label: 'GitHub', url: 'https://www.github.com/onedroid' },
+        { id: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/company/onedroid' }
+    ];
+}
+
+function getSocialUrl(data, id) {
+    return (getSocials(data).find(s => s.id === id) || {}).url || '';
+}
+
+// On the home page, in-page links become bare hashes so they scroll instead of reloading.
+function navHref(url, rootPath) {
+    const path = window.location.pathname;
+    const onHome = !path.includes('/pages/') && (path.endsWith('/') || path.endsWith('index.html'));
+    const hashIdx = url.indexOf('#');
+    if (onHome && hashIdx > -1 && url.startsWith('index.html')) return url.slice(hashIdx);
+    return `${rootPath}${url}`;
+}
+
+function getActiveNavId() {
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    if (path.includes('about.html')) return 'about';
+    const isHome = path.endsWith('/') || path.endsWith('index.html');
+    if (!isHome) return '';
+    if (hash === '#apps') return 'apps';
+    if (hash === '#approach') return 'approach';
+    return 'home';
+}
+
 class SiteNav extends HTMLElement {
     async connectedCallback() {
         const rootPath = this.getAttribute('root') || './';
         const data = await fetchContent(rootPath);
-        if (data) {
-            this.render(data.navigation, rootPath);
-        }
-        this._hashHandler = () => this.render(data.navigation, rootPath);
+        if (!data) return;
+        this.render(data, rootPath);
+
+        this._hashHandler = () => this.updateActive();
         window.addEventListener('hashchange', this._hashHandler);
+
+        this._mq = window.matchMedia('(min-width: 769px)');
+        this._mqHandler = (e) => { if (e.matches) this.closeMenu(false); };
+        this._mq.addEventListener('change', this._mqHandler);
+
+        this._keyHandler = (e) => this.onKeydown(e);
+        document.addEventListener('keydown', this._keyHandler);
     }
 
     disconnectedCallback() {
-        if (this._hashHandler) {
-            window.removeEventListener('hashchange', this._hashHandler);
-            this._hashHandler = null;
-        }
+        if (this._hashHandler) window.removeEventListener('hashchange', this._hashHandler);
+        if (this._mq && this._mqHandler) this._mq.removeEventListener('change', this._mqHandler);
+        if (this._keyHandler) document.removeEventListener('keydown', this._keyHandler);
+        document.documentElement.classList.remove('menu-open');
     }
 
-    render(navLinks, rootPath) {
-        const currentPath = window.location.pathname;
-        const currentHash = window.location.hash;
-
-        const isHome = currentPath.endsWith('/') || currentPath.endsWith('index.html');
-        const isAbout = currentPath.includes('about.html');
-        const isAppsActive = currentHash === '#apps';
+    render(data, rootPath) {
+        const navLinks = data.navigation || [];
+        const brand = data.brand || {};
+        const githubUrl = getSocialUrl(data, 'github') || 'https://www.github.com/onedroid';
+        const activeId = getActiveNavId();
+        const pad = (n) => String(n + 1).padStart(2, '0');
 
         this.innerHTML = `
         <header class="full-width-header">
             <div class="container">
-                <nav>
-                    <a href="${rootPath}index.html" class="logo-wrapper" aria-label="OneDroid home">
-                        <img src="${rootPath}assets/icons/onedroid-icon.png" class="logo-icon" alt="OneDroid Icon">
+                <nav aria-label="Main">
+                    <a href="${rootPath}index.html" class="logo-wrapper" aria-label="${brand.name || 'OneDroid'} home">
+                        <img src="${rootPath}assets/icons/onedroid-icon.png" class="logo-icon" alt="">
                         <span class="logo-text">
-                            <span class="logo-title">OneDroid</span>
-                            <span class="tagline">Simple, Secure & Open</span>
+                            <span class="logo-title">${brand.name || 'OneDroid'}</span>
+                            <span class="tagline">${brand.tagline || 'Android App Studio'}</span>
                         </span>
                     </a>
-                    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <div class="nav-links">
+                        ${navLinks.map(link => `<a href="${navHref(link.url, rootPath)}" data-nav-id="${link.id}" class="${link.id === activeId ? 'active' : ''}"${link.id === activeId ? ' aria-current="page"' : ''}>${link.label}</a>`).join('')}
+                        <a href="${githubUrl}" class="nav-cta" target="_blank" rel="noopener">
+                            ${socialIcon('github', rootPath)} GitHub
+                        </a>
+                    </div>
+                    <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
                         <span></span><span></span><span></span>
                     </button>
-                    <div class="nav-links">
-                        ${navLinks.map(link => {
-            const isActive = (link.label === 'HOME' && isHome && !isAppsActive) ||
-                (link.label === 'PRODUCT' && isAppsActive) ||
-                (link.label === 'ABOUT' && isAbout);
-            return `<a href="${rootPath}${link.url}" class="${isActive ? 'green' : ''}">${link.label}</a>`;
-        }).join('')}
-                    </div>
                 </nav>
+            </div>
+            <div class="mobile-menu" id="mobile-menu" aria-label="Mobile menu">
+                <div class="mobile-menu-inner">
+                    <p class="mobile-menu-label">Menu</p>
+                    <ul class="mobile-menu-links">
+                        ${navLinks.map((link, i) => `
+                        <li style="--i:${i}">
+                            <a href="${navHref(link.url, rootPath)}" data-nav-id="${link.id}" class="${link.id === activeId ? 'active' : ''}"${link.id === activeId ? ' aria-current="page"' : ''}>
+                                <span class="mm-index">${pad(i)}</span>
+                                <span class="mm-label">${link.label}</span>
+                                ${ICON_ARROW}
+                            </a>
+                        </li>`).join('')}
+                    </ul>
+                    <div class="mobile-menu-actions" style="--i:${navLinks.length}">
+                        <a href="${navHref('index.html#apps', rootPath)}" class="btn btn-solid">Explore Apps</a>
+                        <a href="${githubUrl}" class="btn btn-outline" target="_blank" rel="noopener">${socialIcon('github', rootPath)} GitHub</a>
+                    </div>
+                    <div class="mobile-menu-footer" style="--i:${navLinks.length + 1}">
+                        <div class="mm-socials">
+                            ${getSocials(data).map(s => `<a href="${s.url}" target="_blank" rel="noopener" aria-label="${s.label}">${socialIcon(s.id, rootPath)}</a>`).join('')}
+                        </div>
+                        <p>${brand.tagline || 'Android App Studio'}</p>
+                    </div>
+                </div>
             </div>
         </header>
         `;
 
-        const hamburger = this.querySelector('.hamburger');
-        const navLinksEl = this.querySelector('.nav-links');
-        if (hamburger && navLinksEl) {
-            hamburger.addEventListener('click', () => {
-                const expanded = hamburger.getAttribute('aria-expanded') === 'true';
-                hamburger.setAttribute('aria-expanded', String(!expanded));
-                hamburger.classList.toggle('active');
-                navLinksEl.classList.toggle('open');
-            });
-            navLinksEl.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburger.setAttribute('aria-expanded', 'false');
-                    hamburger.classList.remove('active');
-                    navLinksEl.classList.remove('open');
-                });
-            });
+        this._header = this.querySelector('.full-width-header');
+        this._hamburger = this.querySelector('.hamburger');
+        this._menu = this.querySelector('.mobile-menu');
+
+        this._hamburger.addEventListener('click', () => {
+            if (this.isOpen()) this.closeMenu(true);
+            else this.openMenu();
+        });
+        this._menu.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => this.closeMenu(false));
+        });
+    }
+
+    updateActive() {
+        const activeId = getActiveNavId();
+        this.querySelectorAll('[data-nav-id]').forEach(a => {
+            const on = a.dataset.navId === activeId;
+            a.classList.toggle('active', on);
+            if (on) a.setAttribute('aria-current', 'page');
+            else a.removeAttribute('aria-current');
+        });
+    }
+
+    isOpen() {
+        return !!this._menu && this._menu.classList.contains('open');
+    }
+
+    openMenu() {
+        if (!this._menu) return;
+        this.style.setProperty('--header-h', `${this._header.getBoundingClientRect().bottom}px`);
+        this._menu.classList.add('open');
+        this._hamburger.classList.add('active');
+        this._hamburger.setAttribute('aria-expanded', 'true');
+        this._hamburger.setAttribute('aria-label', 'Close menu');
+        document.documentElement.classList.add('menu-open');
+    }
+
+    closeMenu(returnFocus) {
+        if (!this.isOpen()) return;
+        this._menu.classList.remove('open');
+        this._hamburger.classList.remove('active');
+        this._hamburger.setAttribute('aria-expanded', 'false');
+        this._hamburger.setAttribute('aria-label', 'Open menu');
+        document.documentElement.classList.remove('menu-open');
+        if (returnFocus) this._hamburger.focus();
+    }
+
+    onKeydown(e) {
+        if (!this.isOpen()) return;
+        if (e.key === 'Escape') {
+            this.closeMenu(true);
+            return;
+        }
+        if (e.key !== 'Tab') return;
+        // Keep focus inside the hamburger + open menu.
+        const focusables = [this._hamburger, ...this._menu.querySelectorAll('a[href], button')];
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
         }
     }
 }
@@ -193,7 +315,8 @@ class HeroSection extends HTMLElement {
 
         let heroData;
         if (page === 'home') heroData = data.home.hero;
-        else if (page === 'about') heroData = { title: data.about.title, subtitle: data.about.description, links: data.about.links };
+        else if (page === 'about') heroData = { title: data.about.title, subtitle: data.about.description, links: getSocials(data).filter(s => s.id === 'github' || s.id === 'linkedin') };
+        const playstoreUrl = (data.brand && data.brand.playstore_url) || '';
 
         if (!heroData) return;
 
@@ -210,21 +333,26 @@ class HeroSection extends HTMLElement {
             </div>
             ` : ''}
             <div class="hero-content" style="position: relative; z-index: 1;">
-                ${heroData.icon ? `<img src="${rootPath}${heroData.icon}" alt="App Icon" class="app-icon">` : ''}
+                ${heroData.eyebrow ? `<span class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>${heroData.eyebrow}</span>` : ''}
                 <h1 ${page === 'about' ? 'style="text-transform: none;"' : ''}>${heroData.title}</h1>
                 <p>${heroData.subtitle}</p>
                 <div class="btn-group">
                     ${page === 'home' ? `
-                        <a href="${heroData.github_url}" class="btn btn-outline">
-                            <img src="${rootPath}assets/icons/github.svg" alt="GitHub"> GitHub
+                        <a href="#apps" class="btn btn-solid">Explore Apps</a>
+                        <a href="${heroData.github_url}" class="btn btn-outline" target="_blank" rel="noopener">
+                            ${socialIcon('github', rootPath)} GitHub
                         </a>
-                        <a class="btn btn-outline disabled" aria-disabled="true">
-                            <img src="${rootPath}assets/icons/smartphone.svg" alt="Playstore"> Playstore (Coming Soon)
-                        </a>
+                        ${playstoreUrl ? `
+                        <a href="${playstoreUrl}" class="btn btn-outline" target="_blank" rel="noopener">
+                            <img src="${rootPath}assets/icons/smartphone.svg" alt="" aria-hidden="true"> Google Play
+                        </a>` : `
+                        <span class="btn btn-outline disabled" aria-disabled="true">
+                            <img src="${rootPath}assets/icons/smartphone.svg" alt="" aria-hidden="true"> Google Play &middot; Soon
+                        </span>`}
                     ` : ''}
                     ${page === 'about' ? heroData.links.map(l => `
-                        <a href="${l.url}" target="_blank" class="btn btn-outline">
-                            <img src="${rootPath}${l.icon}" alt="${l.label}"> ${l.label}
+                        <a href="${l.url}" target="_blank" rel="noopener" class="btn btn-outline">
+                            ${socialIcon(l.id, rootPath)} ${l.label}
                         </a>
                     `).join('') : ''}
                 </div>
@@ -658,7 +786,10 @@ class ProjectCarousel extends HTMLElement {
     async connectedCallback() {
         const rootPath = this.getAttribute('root') || './';
         const data = await fetchContent(rootPath);
+        // Keep the static "coming soon" markup when there are no projects yet.
         if (!data || !data.home.projects || !data.home.projects.length) return;
+
+        const MODEL_LABELS = { 'open-source': 'Open Source', 'ads': 'Free with Ads', 'iap': 'In-App Purchases', 'paid': 'Paid' };
 
         this.innerHTML = `
             <div class="carousel-wrapper">
@@ -681,6 +812,10 @@ class ProjectCarousel extends HTMLElement {
                                         </div>
                                         <svg color="#444" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
                                     </div>
+                                    ${Array.isArray(p.model) && p.model.length ? `
+                                    <div class="model-badges">
+                                        ${p.model.map(m => `<span class="model-badge model-${m}">${MODEL_LABELS[m] || m}</span>`).join('')}
+                                    </div>` : ''}
                                     <h3>${p.title}</h3>
                                     <p>${p.status}</p>
                                 </div>
@@ -744,73 +879,110 @@ class AboutContent extends HTMLElement {
     }
 }
 
+class ApproachGrid extends HTMLElement {
+    async connectedCallback() {
+        const rootPath = this.getAttribute('root') || './';
+        const data = await fetchContent(rootPath);
+        const items = data && data.home && data.home.approach;
+        if (!items || !items.length) return;
+
+        this.innerHTML = `
+            <div class="approach-grid">
+                ${items.map(item => `
+                    <article class="approach-card">
+                        <div class="approach-icon"><img src="${rootPath}${item.icon}" alt="" aria-hidden="true"></div>
+                        <div class="approach-body">
+                            <h3>${item.title}</h3>
+                            <p>${item.text}</p>
+                            ${item.tag ? `<span class="pill">${item.tag}</span>` : ''}
+                        </div>
+                    </article>
+                `).join('')}
+            </div>
+        `;
+    }
+}
+
 class SiteFooter extends HTMLElement {
     async connectedCallback() {
         const rootPath = this.getAttribute('root') || getRootPath() || './';
         const data = await fetchContent(rootPath).catch(() => null);
-        const githubUrl = (data && data.home && data.home.hero && data.home.hero.github_url) || 'https://www.github.com/onedroid';
-        const linkedinUrl = (data && data.about && data.about.links)
-            ? (data.about.links.find(l => /linkedin/i.test(l.label)) || {}).url || 'https://www.linkedin.com/company/onedroid'
-            : 'https://www.linkedin.com/company/onedroid';
+        const brand = (data && data.brand) || {};
+        const name = brand.name || 'OneDroid';
+        const navLinks = (data && data.navigation) || [
+            { label: 'Home', url: 'index.html' },
+            { label: 'Apps', url: 'index.html#apps' },
+            { label: 'About', url: 'pages/about.html' }
+        ];
+        const socials = getSocials(data);
+        const playstoreUrl = brand.playstore_url || '';
+        const githubUrl = getSocialUrl(data, 'github') || 'https://www.github.com/onedroid';
 
         this.innerHTML = `
         <footer class="full-width-footer">
             <div class="container">
                 <div class="footer-main">
                     <div class="footer-brand">
-                        <a href="${rootPath}index.html" class="footer-logo" aria-label="OneDroid home">
-                            <img src="${rootPath}assets/icons/onedroid-icon.png" alt="OneDroid logo">
-                            <span>OneDroid</span>
+                        <a href="${rootPath}index.html" class="footer-logo" aria-label="${name} home">
+                            <img src="${rootPath}assets/icons/onedroid-icon.png" alt="">
+                            <span>${name}</span>
                         </a>
-                        <p class="footer-desc">Simple, Secure &amp; Open. Open-source Android apps built with integrity. No ads, no tracking, free forever.</p>
-                        <div class="footer-socials">
-                            <a href="${githubUrl}" target="_blank" rel="noopener" aria-label="GitHub">
-                                <img src="${rootPath}assets/icons/github.svg" alt="GitHub">
-                            </a>
-                            <a href="${linkedinUrl}" target="_blank" rel="noopener" aria-label="LinkedIn">
-                                <img src="${rootPath}assets/icons/linkedin-icon.svg" alt="LinkedIn">
-                            </a>
-                            <a href="https://www.youtube.com/@one-droid" target="_blank" rel="noopener" aria-label="YouTube">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></svg>
-                            </a>
-                            <a href="https://huggingface.co/one-droid" target="_blank" rel="noopener" aria-label="Hugging Face">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.025 1.13c-5.77 0-10.449 4.647-10.449 10.378 0 1.112.178 2.181.503 3.185.064-.222.203-.444.416-.577a.96.96 0 0 1 .524-.15c.293 0 .584.124.84.284.278.173.48.408.71.694.226.282.458.611.684.951v-.014c.017-.324.106-.622.264-.874s.403-.487.762-.543c.3-.047.596.06.787.203s.31.313.4.467c.15.257.212.468.233.542.01.026.653 1.552 1.657 2.54.616.605 1.01 1.223 1.082 1.912.055.537-.096 1.059-.38 1.572.637.121 1.294.187 1.967.187.657 0 1.298-.063 1.921-.178-.287-.517-.44-1.041-.384-1.581.07-.69.465-1.307 1.081-1.913 1.004-.987 1.647-2.513 1.657-2.539.021-.074.083-.285.233-.542.09-.154.208-.323.4-.467a1.08 1.08 0 0 1 .787-.203c.359.056.604.29.762.543s.247.55.265.874v.015c.225-.34.457-.67.683-.952.23-.286.432-.52.71-.694.257-.16.547-.284.84-.285a.97.97 0 0 1 .524.151c.228.143.373.388.43.625l.006.04a10.3 10.3 0 0 0 .534-3.273c0-5.731-4.678-10.378-10.449-10.378M8.327 6.583a1.5 1.5 0 0 1 .713.174 1.487 1.487 0 0 1 .617 2.013c-.183.343-.762-.214-1.102-.094-.38.134-.532.914-.917.71a1.487 1.487 0 0 1 .69-2.803m7.486 0a1.487 1.487 0 0 1 .689 2.803c-.385.204-.536-.576-.916-.71-.34-.12-.92.437-1.103.094a1.487 1.487 0 0 1 .617-2.013 1.5 1.5 0 0 1 .713-.174m-10.68 1.55a.96.96 0 1 1 0 1.921.96.96 0 0 1 0-1.92m13.838 0a.96.96 0 1 1 0 1.92.96.96 0 0 1 0-1.92M8.489 11.458c.588.01 1.965 1.157 3.572 1.164 1.607-.007 2.984-1.155 3.572-1.164.196-.003.305.12.305.454 0 .886-.424 2.328-1.563 3.202-.22-.756-1.396-1.366-1.63-1.32q-.011.001-.02.006l-.044.026-.01.008-.03.024q-.018.017-.035.036l-.032.04a1 1 0 0 0-.058.09l-.014.025q-.049.088-.11.19a1 1 0 0 1-.083.116 1.2 1.2 0 0 1-.173.18q-.035.029-.075.058a1.3 1.3 0 0 1-.251-.243 1 1 0 0 1-.076-.107c-.124-.193-.177-.363-.337-.444-.034-.016-.104-.008-.2.022q-.094.03-.216.087-.06.028-.125.063l-.13.074q-.067.04-.136.086a3 3 0 0 0-.135.096 3 3 0 0 0-.26.219 2 2 0 0 0-.12.121 2 2 0 0 0-.106.128l-.002.002a2 2 0 0 0-.09.132l-.001.001a1.2 1.2 0 0 0-.105.212q-.013.036-.024.073c-1.139-.875-1.563-2.317-1.563-3.203 0-.334.109-.457.305-.454m.836 10.354c.824-1.19.766-2.082-.365-3.194-1.13-1.112-1.789-2.738-1.789-2.738s-.246-.945-.806-.858-.97 1.499.202 2.362c1.173.864-.233 1.45-.685.64-.45-.812-1.683-2.896-2.322-3.295s-1.089-.175-.938.647 2.822 2.813 2.562 3.244-1.176-.506-1.176-.506-2.866-2.567-3.49-1.898.473 1.23 2.037 2.16c1.564.932 1.686 1.178 1.464 1.53s-3.675-2.511-4-1.297c-.323 1.214 3.524 1.567 3.287 2.405-.238.839-2.71-1.587-3.216-.642-.506.946 3.49 2.056 3.522 2.064 1.29.33 4.568 1.028 5.713-.624m5.349 0c-.824-1.19-.766-2.082.365-3.194 1.13-1.112 1.789-2.738 1.789-2.738s.246-.945.806-.858.97 1.499-.202 2.362c-1.173.864.233 1.45.685.64.451-.812 1.683-2.896 2.322-3.295s1.089-.175.938.647-2.822 2.813-2.562 3.244 1.176-.506 1.176-.506 2.866-2.567 3.49-1.898-.473 1.23-2.037 2.16c-1.564.932-1.686 1.178-1.464 1.53s3.675-2.511 4-1.297c.323 1.214-3.524 1.567-3.287 2.405.238.839 2.71-1.587 3.216-.642.506.946-3.49 2.056-3.522 2.064-1.29.33-4.568 1.028-5.713-.624"/></svg>
-                            </a>
-                        </div>
+                        <p class="footer-desc">An independent Android app studio building simple, secure, and genuinely useful apps.</p>
+                        <ul class="footer-models" aria-label="How our apps are offered">
+                            <li><span class="model-dot model-open-source" aria-hidden="true"></span>Open Source</li>
+                            <li><span class="model-dot model-ads" aria-hidden="true"></span>Free with Ads</li>
+                            <li><span class="model-dot model-iap" aria-hidden="true"></span>In-App Purchases</li>
+                        </ul>
                     </div>
                     <nav class="footer-links" aria-label="Footer">
                         <div class="footer-col">
                             <h4>Explore</h4>
-                            <a href="${rootPath}index.html">Home</a>
-                            <a href="${rootPath}index.html#apps">Product</a>
-                            <a href="${rootPath}pages/about.html">About</a>
+                            <ul>
+                                ${navLinks.map(l => `<li><a href="${navHref(l.url, rootPath)}">${l.label}</a></li>`).join('')}
+                            </ul>
                         </div>
                         <div class="footer-col">
-                            <h4>Resources</h4>
-                            <a href="${githubUrl}" target="_blank" rel="noopener">GitHub</a>
-                            <a href="${linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>
-                            <a href="https://huggingface.co/one-droid" target="_blank" rel="noopener">Hugging Face</a>
+                            <h4>Get the Apps</h4>
+                            <ul>
+                                <li>${playstoreUrl
+                ? `<a href="${playstoreUrl}" target="_blank" rel="noopener">Google Play</a>`
+                : `<span class="footer-soon">Google Play <em>Soon</em></span>`}</li>
+                                <li><a href="${githubUrl}" target="_blank" rel="noopener">Open Source on GitHub</a></li>
+                            </ul>
                         </div>
-                        <div class="footer-col">
-                            <h4>Company</h4>
-                            <a href="#">Blog</a>
-                            <a href="#">Careers</a>
-                            <a href="#">Privacy</a>
+                        <div class="footer-col footer-col-social">
+                            <h4>Follow</h4>
+                            <ul class="footer-socials">
+                                ${socials.map(s => `
+                                <li><a href="${s.url}" target="_blank" rel="noopener">
+                                    <span class="footer-social-icon">${socialIcon(s.id, rootPath)}</span>
+                                    <span>${s.label}</span>
+                                </a></li>`).join('')}
+                            </ul>
                         </div>
                     </nav>
                 </div>
                 <div class="footer-bottom">
-                    <p>&copy; ${new Date().getFullYear()} One Droid. All rights reserved.</p>
-                    <p>One Droid &ndash; Mobile App Development Studio</p>
+                    <p>&copy; ${new Date().getFullYear()} ${name}. All rights reserved.</p>
+                    <button type="button" class="back-to-top">${ICON_UP} Back to top</button>
                 </div>
             </div>
         </footer>
         `;
+
+        const toTop = this.querySelector('.back-to-top');
+        if (toTop) {
+            toTop.addEventListener('click', () => {
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+            });
+        }
     }
 }
 
 customElements.define('site-nav', SiteNav);
 customElements.define('hero-section', HeroSection);
 customElements.define('project-carousel', ProjectCarousel);
+customElements.define('approach-grid', ApproachGrid);
 customElements.define('about-content', AboutContent);
 customElements.define('site-footer', SiteFooter);
