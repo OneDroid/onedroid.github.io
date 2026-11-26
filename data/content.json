@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "OneDroid",
-    "tagline": "Android App Studio",
+    "tagline": "Intelligent Mobile Innovation",
     "playstore_url": "",
     "socials": [
       { "id": "github", "label": "GitHub", "url": "https://www.github.com/onedroid" },
@@ -18,9 +18,9 @@
   ],
   "home": {
     "hero": {
-      "eyebrow": "Independent Android App Studio",
+      "eyebrow": "Independent Mobile App Studio",
       "title": "Simple. Secure. Built Right.",
-      "subtitle": "OneDroid crafts Android apps people genuinely enjoy using. Some are <span class=\"green\">open source</span>, others are free with ads and optional in-app purchases that keep development going.",
+      "subtitle": "OneDroid transforms ideas into intelligent mobile experiences. We combine innovative technology, purposeful design, and <span class=\"green\">on-device</span> intelligence to build apps that solve real problems and redefine everyday possibilities.",      
       "github_url": "https://www.github.com/onedroid",
       "animation": "logcat",
       "animation_randomize": false
